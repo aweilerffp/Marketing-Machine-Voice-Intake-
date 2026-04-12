@@ -1,0 +1,109 @@
+Agent: Welcome! I'm excited to learn about your brand today. Let's start with the basics — what does your company do? Give me the 30-second version.
+
+Founder: Yeah, so we're Relay Creek. We build automation systems for mid-market logistics companies. Basically, if you're a regional freight broker or a 3PL doing between 50 and 500 million in revenue, and your ops team is still drowning in spreadsheets and manual emails, we come in and wire everything together. TMS, CRM, carrier communications, billing — we make it all talk to each other so your people can focus on relationships instead of data entry.
+
+Agent: Love it. If you had to explain that to someone at a barbecue, how would you say it?
+
+Founder: Ha, I usually say "we're the people who make logistics companies stop doing dumb stuff manually." That usually gets a laugh and then they ask what I mean, and I say — you know how you'd never hand-write an invoice in 2025? Well, a shocking number of freight brokers are basically doing the equivalent of that across their whole operation. We fix that.
+
+Agent: That's a great way to put it. What are your core services or products — what do people actually buy from you?
+
+Founder: Three things. First is the integration buildout — that's the big project where we come in, audit their tech stack, and build the connectors between their systems. Second is what we call "Relay Ops," which is our managed automation service. We run it for them on an ongoing basis. Third is training — we teach their team how to actually use the stuff we build, because the best automation in the world is useless if people don't trust it.
+
+Agent: What are your core values — the real ones, not the ones on the wall?
+
+Founder: Okay, I love this question because we actually talk about this a lot internally. Number one is "show your work." We never do anything black-box. If we build an automation, the client can see exactly what it does and why. Number two is "earn the next yes." We don't do long contracts. Every month a client stays with us, they're choosing to stay. That keeps us honest. And number three — this one's a little weird — is "be the calm in the chaos." Logistics is inherently chaotic. Stuff breaks, shipments go sideways, carriers ghost you. We want to be the part of their operation that just works, that they don't have to worry about.
+
+Agent: If I watched your team work for a week, what would I see that proves these values?
+
+Founder: You'd see a lot of Loom videos. Seriously. Every time we build something or change something, we record a walkthrough. That's "show your work" in action. You'd also see our monthly check-ins where we literally ask the client "should we keep doing this?" — that's "earn the next yes." And for the calm thing — you'd notice that when something breaks at 2am, our Slack doesn't turn into a panic channel. We have runbooks for everything. My team doesn't freak out because they know exactly what to do.
+
+Agent: Why does this company exist? What's the mission?
+
+Founder: Honestly? I started this because I watched my dad run a small freight brokerage for 20 years, and he was brilliant at relationships but terrible at technology. He'd stay until midnight doing stuff that should have taken five minutes. I don't want any operator to go through that. The mission is — make technology invisible so operators can do what they're actually good at.
+
+Agent: What would be lost if you disappeared tomorrow?
+
+Founder: I think our clients would be fine for a while because we build things to last. But eventually, as their tech changes and their business grows, stuff would start breaking and nobody would know how to fix it. The institutional knowledge we hold about how all their systems connect — that's what would be lost. We're the memory of their tech stack.
+
+Agent: Tell me about a specific client result you're proud of.
+
+Founder: Oh man, Mountain Pass Freight. They came to us doing about 200 million in revenue with a team of 14 people in ops who were basically just copying and pasting data between three systems all day. We spent eight weeks building their integration layer, and within the first month they redeployed six of those people to actually managing carrier relationships instead of data entry. Their on-time delivery rate went up 12% in the next quarter — not because of the automation directly, but because their people finally had time to do their actual jobs. The COO told me, "You gave me my team back." That one still gets me.
+
+Agent: That's powerful. Now let's talk about brand personality. If your brand walked into a room, how would people describe them?
+
+Founder: I think they'd say we're the person who's clearly competent but doesn't need to show off about it. Like, we know our stuff but we're not going to make you feel dumb for not knowing it. Approachable but sharp. The person at the party who can explain something complex and make you feel smart for understanding it. Not flashy. Not salesy. Just solid.
+
+Agent: What's the vibe? The energy?
+
+Founder: Steady. Confident but not cocky. Like a really good mechanic — they don't need to tell you they're good, you can just tell by how they talk about the work. There's a quiet competence to it.
+
+Agent: Give me 3 to 5 personality traits that define your brand. Not values — personality. How you show up.
+
+Founder: Okay. One — steady. We don't get rattled. Two — plain-spoken. We don't hide behind jargon or buzzwords. Three — curious. We ask a lot of questions because every client's setup is different. Four — builder mentality. We'd rather build the right thing than sell you the shiny thing. And five — I'd say dry humor. We don't take ourselves too seriously. Our internal Slack is full of memes.
+
+Agent: What should your brand never sound like?
+
+Founder: Never sound like a consultant. Like, the big-firm consultant voice where everything is "leveraging synergies" and "driving transformation." Kill me. Also, never sound desperate or pushy. We don't chase. If we're a fit, great. If not, also great. And definitely never sound like we think we're smarter than the client. We're not. They know their business way better than we ever will. We just know the tech part.
+
+Agent: What's the anti-you?
+
+Founder: The anti-us is one of those companies that shows up with a 60-slide deck full of buzzwords, promises the moon, and then sends junior people to do the work. We're the opposite of that. Small team, senior people, no BS, and we show you exactly what you're getting.
+
+Agent: Great. Let's move into tone and style. On a scale of 1 to 10, where 1 is texting a friend and 10 is a legal brief, how formal should your content be?
+
+Founder: Probably a 4. Maybe a 3 on social, 5 in proposals. We want to sound like a smart person talking to another smart person over coffee. Not sloppy, but definitely not stiff.
+
+Agent: Do you use contractions? "We're" versus "We are" — what feels right?
+
+Founder: Always contractions. "We are" sounds like a press release. We're humans.
+
+Agent: Any slang or casual language that's on-brand?
+
+Founder: Yeah, we say stuff like "wire it up," "plug things in," "make it talk to each other." Very mechanical, hands-on language. We also say "the dumb stuff" a lot — as in, "let us automate the dumb stuff so you can do the smart stuff." That resonates with people.
+
+Agent: How do you address your audience? "You," "our clients," "partners"?
+
+Founder: "You" mostly. Very direct. Sometimes "your team" when we're talking about the impact on their people. We never say "partners" — that feels corporate and vague.
+
+Agent: How technical should your language be?
+
+Founder: Middle ground. Our buyers are ops leaders who understand their systems but aren't developers. So we can say "API integration" but we shouldn't say "RESTful endpoint orchestration." We should be able to explain what we do without someone needing a CS degree.
+
+Agent: Got it. Let's walk through some scenarios. How would you announce a new feature or service?
+
+Founder: Honestly, pretty low-key. Something like "Hey, we built a thing that solves [specific problem]. Here's what it does, here's who it's for." No hype. No "we're thrilled to announce" or "game-changing." Just — here's what it does, here's why it matters to you.
+
+Agent: How would you apologize for a service disruption?
+
+Founder: Direct and fast. "Something broke, here's what happened, here's what we're doing about it, here's when it'll be fixed." No corporate hedging. No "we apologize for any inconvenience." Just own it, explain it, fix it. Our clients are logistics people — they deal with disruptions all day. They don't need a flowery apology, they need information and a timeline.
+
+Agent: How would you explain a complex technical concept to a prospect?
+
+Founder: Analogy. Always analogy. Like, I don't say "we're building middleware that translates between disparate systems." I say "right now your TMS and your CRM are speaking different languages. We build the translator so they can actually talk to each other." People get that instantly.
+
+Agent: How would you congratulate a client on a win?
+
+Founder: Genuinely but briefly. Like, a quick message that says "Saw your Q3 numbers — your team crushed it. That on-time rate is no joke." Not a formal congratulations. More like how you'd high-five a colleague. We keep it real.
+
+Agent: Now for differentiation. Are there specific words or phrases you love using?
+
+Founder: "Wire it up" — that's our go-to. "The dumb stuff" — everyone knows what that means. "Earn the next yes" — that's a value but it's also a phrase we use in marketing. "Make it talk to each other." And I love saying "we're the people who" — it's a natural way to explain what we do.
+
+Agent: Are there words or phrases to absolutely avoid?
+
+Founder: "Synergy" — never. "Leverage" as a verb — gross. "Digital transformation" — it's meaningless. "Disrupt" — we're not disrupting anything, we're connecting things. "Solution" on its own — like "we provide solutions." Solutions to what? Say the actual thing. Oh, and "partnership" when you mean "we're your vendor." Just be honest about the relationship.
+
+Agent: How do you want to sound different from your competitors?
+
+Founder: Most of our competitors sound like they're trying to be Accenture. Big words, big promises, vague everything. We want to sound like we've actually done the work. Specific, grounded, practical. When someone reads our stuff, I want them to think "these people actually understand my problems" — not "these people have a good marketing team."
+
+Agent: Name 2 or 3 brands whose voice you admire and why.
+
+Founder: Basecamp — now 37signals. They say exactly what they think, they're opinionated, and they don't try to sound like everyone else. Stripe — their documentation is incredible. Clear, developer-friendly, no fluff. And honestly, Carhartt. Not a tech company, but their brand is "we make stuff that works and we don't need to be fancy about it." That's us.
+
+Agent: What do your best clients say about working with you?
+
+Founder: The one I hear most is "you just get it." Like, they don't have to explain their business to us three times. The Mountain Pass COO said "you gave me my team back" — I already mentioned that one but it's my favorite. Another client told us "you're the first tech vendor that actually answers the phone." And one guy said, "I forget you're even there until I remember how much worse things used to be." That last one — that's the dream.
+
+Agent: That's an amazing note to end the Brand Voice section on. Let's take a short break before we move into your Ideal Customer Profile.

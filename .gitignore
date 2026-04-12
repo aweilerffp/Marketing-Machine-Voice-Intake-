@@ -4,5 +4,6 @@ node_modules/
 # Client data stays local
 transcripts/*
 !transcripts/.gitkeep
+!transcripts/test-*
 outputs/*
 !outputs/.gitkeep
