@@ -95,9 +95,7 @@ async function main() {
     output_config: {
       format: {
         type: 'json_schema',
-        name: 'brand_voice_extraction',
         schema: schema,
-        strict: true,
       },
     },
   });
