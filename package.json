@@ -1,0 +1,12 @@
+{
+  "name": "marketing-machine-voice-intake",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Brand voice generation from ElevenLabs discovery session transcripts",
+  "scripts": {
+    "generate": "node --env-file=.env src/generate-brand-voice.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.88.0"
+  }
+}
