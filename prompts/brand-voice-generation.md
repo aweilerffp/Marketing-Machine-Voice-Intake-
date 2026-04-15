@@ -10,6 +10,12 @@ Analyze the transcript and produce structured output organized into three parts:
 2. **coverage_check** — Gap report evaluating how well each discovery question was addressed
 3. **client_reflection** — A warm, specific paragraph to show the client on a break screen
 
+## Purpose of This Extraction
+
+Your output is NOT the final client deliverable. It is **pre-processing for a downstream "Phase 1 polish" step** that will produce the client-ready Brand Voice Guide. That polish step expects to see very specific fields (formality rating as a number, named scenarios with example responses, 3+ concrete do/don't pairs, etc.).
+
+Your job: make the polish step's work easy by surfacing the right structured data with faithful evidence. Think of yourself as the research analyst; someone else will write the report. When in doubt between "generic but safe" and "specific but awkward," always choose specific.
+
 ---
 
 ## Deliverable Template
@@ -36,6 +42,37 @@ The following questions guided the discovery session. Use them as your coverage 
 - Be specific. Ground every insight in something the founder actually said or implied.
 - Do NOT generate generic marketing language. If the founder said "we're scrappy and we figure it out," capture that energy — don't sanitize it into "agile problem-solving."
 - Map insights to the appropriate theme section. If something could go in multiple sections, put it where it fits best and don't duplicate.
+
+**Concrete examples of good insights:**
+
+Tone & Style Cheat Sheet:
+```
+{
+  "label": "Formality rating",
+  "value": "4/10 overall — the founder specified 3 for social, 5 for proposals",
+  "evidence": "Direct answer to the 1-10 formality question: 'Probably a 4. Maybe a 3 on social, 5 in proposals.'"
+}
+```
+
+Scenario Playbook:
+```
+{
+  "label": "Apologizing for a service disruption",
+  "value": "Direct and fast. 'Something broke, here's what happened, here's what we're doing about it, here's when it'll be fixed.' No corporate hedging.",
+  "evidence": "Founder explicitly rejected flowery corporate apologies, citing that their logistics clients deal with disruptions all day and need information, not apology theater."
+}
+```
+
+Do vs Don't:
+```
+{
+  "label": "Do vs Don't: announcing features",
+  "value": "DO: 'We built a thing that solves [specific problem]. Here's what it does, here's who it's for.' DON'T: 'We're thrilled to announce our game-changing new platform.'",
+  "evidence": "Founder described low-key announcements, explicitly rejecting 'we're thrilled to announce' and 'game-changing.'"
+}
+```
+
+The pattern: specific `label` matching the deliverable field, `value` that includes the founder's actual phrasing or clear description of their approach, and `evidence` that grounds it in the transcript.
 
 ### verbatim_quotes (per theme)
 
@@ -77,3 +114,5 @@ The following questions guided the discovery session. Use them as your coverage 
 3. **Do NOT write generic reflections.** Anchor every sentence in something specific from this particular conversation.
 4. **Do NOT invent explicit_dont entries.** Only include things the founder actively pushed back on.
 5. **Do NOT over-extract.** If a theme section has thin coverage in the transcript, a few solid insights are better than padded filler.
+6. **Do NOT omit the four scenarios.** The Scenario Playbook section should contain an insight for each of: announcing a new feature, apologizing for a disruption, explaining complex to a non-technical prospect, and celebrating a client win. If the founder didn't address one, the insight's `value` can note that directly — but the label must still appear.
+7. **Do NOT give fewer than 3 Do/Don't pairs.** The Do vs Don't section requires at least 3 concrete pairs. If the transcript has limited material, derive the pairs from adjacent content (loved phrases vs banned phrases, personality traits vs the "anti-you," etc.) but keep them grounded in what was actually said.
