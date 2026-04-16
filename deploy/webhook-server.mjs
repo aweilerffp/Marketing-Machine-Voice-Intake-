@@ -24,7 +24,8 @@ function deploy() {
     const commands = [
       `git -C ${REPO_DIR} pull origin ${BRANCH}`,
       `cd ${REPO_DIR}/workshop-app && npm install --production=false`,
-      `pm2 restart workshop-app 2>/dev/null || pm2 start npm --name workshop-app --cwd ${REPO_DIR}/workshop-app -- run start`,
+      `cd ${REPO_DIR}/workshop-app && npm run build`,
+      `pm2 restart workshop-app 2>/dev/null || pm2 start npm --name workshop-app --cwd ${REPO_DIR}/workshop-app -- run start -- --hostname 0.0.0.0 --port 3000`,
     ];
 
     for (const cmd of commands) {
