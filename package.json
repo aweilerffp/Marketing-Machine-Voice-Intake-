@@ -2,9 +2,12 @@
   "name": "marketing-machine-voice-intake",
   "version": "0.1.0",
   "type": "module",
-  "description": "Brand voice generation from ElevenLabs discovery session transcripts",
+  "description": "Structured extraction from ElevenLabs discovery session transcripts",
   "scripts": {
-    "generate": "node --env-file=.env src/generate-brand-voice.mjs"
+    "generate": "node --env-file=.env src/generate.mjs",
+    "generate:voice": "node --env-file=.env src/generate.mjs --section a",
+    "generate:icp": "node --env-file=.env src/generate.mjs --section b",
+    "generate:channels": "node --env-file=.env src/generate.mjs --section c"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0"

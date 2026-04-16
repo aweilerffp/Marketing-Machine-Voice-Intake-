@@ -1,0 +1,500 @@
+SECTION B: IDEAL CUSTOMER
+────────────────────────────────────────
+
+Q: Great to meet you! Let's dive into your ideal customers.
+
+First things first — what industries or types of businesses do you typically work with? Are there specific verticals where Emplicit really shines?
+
+A: We do really great work for HPC, health and personal care supplement and pet products. That's probably about 60% of our business, and we also have some in the hardlines section.
+
+Q: Got it — so HPC, supplements, and pet products are your sweet spot, with some hardlines mixed in.
+
+When you think about those HPC and supplement brands specifically, what does a typical client look like in terms of size? Are we talking $5M in revenue, $50M, somewhere else entirely?
+
+A: We say 3 to 103 million is that sweet spot, so they've got product-market fit. They are doing something off Amazon, typically Facebook ads, and then when we come in, we can add 20-40% incremental to that business. Below 3 million, that's just a smaller number, and above 100 million, well, they probably want to work with us for a little bit and then kind of in-house it and hire a 3- or 4-person team to replicate what we're doing.
+
+Q: That's super helpful — so you're catching them right in that growth zone where they've proven the model elsewhere but haven't fully scaled Amazon yet.
+
+When you say they're typically running Facebook ads before you, does that mean they already have a dedicated marketing person or team in-house? Who's usually your main point of contact at these companies — founder, CMO, ecommerce director?
+
+A: Yeah, so on the smaller side, it's typically the founder. The best brands we work with, it's like an e-commerce director or marketplace manager. They know enough to keep us on track and have enough power to say yes to initiatives that we pitch proactively and have metrics that we can make them look really good on.
+
+Q: That makes sense — you want someone who gets it but isn't so hands-on they bottleneck decisions.
+
+When an ecommerce director or marketplace manager is evaluating you, who else typically gets pulled into that conversation? Is it just them signing off, or does it usually need to go up to a CFO, founder, or anyone else before they can move forward?
+
+A: When it comes to signing off, getting a founder or COO or CFO on those proposal calls is important, and we can speak to them and we know what things they like as well.
+
+Q: Interesting — so the ecommerce director might drive the evaluation, but you need the founder or C-suite on the call to actually close it.
+
+What are those founders and CFOs typically looking for that's different from what the ecommerce director cares about? What do you emphasize when you know they're in the room?
+
+A: You know, profitability growth. They know marketing agencies are good at just spending a ton of money, but is it profitable smart growth?
+
+Q: Right — they've been burned by agencies that scale revenue but tank margins. Makes sense.
+
+Shifting gears a bit — where do these ecommerce directors and founders typically hang out online? Are they active on LinkedIn, in specific Slack communities, Reddit, industry forums? Where would they go to ask "who's a good Amazon agency?"
+
+A: LinkedIn and group chats and small Facebook groups. It's kind of similar to LinkedIn.
+
+Q: Got it — so LinkedIn plus private groups where they're asking peers for referrals.
+
+Now let me ask this: when a brand comes to you at that $3-10M range, what's the actual problem they're trying to solve? Not "we need Amazon help," but in *their* words, what are they struggling with that makes them start looking?
+
+A: Maybe they work with other Amazon agencies at this point in time. In the marketplace, it's more mature, so most people have worked with another agency, and it's really just reactive, maybe ads only. They're realizing they need more help on the channel to manage it correctly.
+
+Q: So they've already tried an agency — probably ads-focused, probably reactive — and it's not working the way they need it to.
+
+When they come to you frustrated with that previous agency, what specifically are they complaining about? What's breaking down that makes them think "I need to switch"?
+
+A: Growth has stalled, or there's growth happening, but it's coming at the sake of profitability. Other things they keep asking for are out of scope from that agency, or that agency just doesn't do them.
+
+Q: That's a clear pattern — either growth plateaus, margins get destroyed, or they keep hearing "that's not what we do."
+
+When they're evaluating you versus sticking with their current agency or trying another one, what do they see in Emplicit that makes them think "okay, *this* is different"? What tips the scale?
+
+A: I think that we talk about it holistically, specifically, like, "Okay, can we be running multiple conversion rate optimization tests for these listings, because if we can get them to convert 5% higher, that's an additional X% in revenue without spending any money on ads? Now your ads are going to perform better, and now if we keep in stock, you're going to be paying less in fees, and you're going to be able to scale the business." I think hearing those kinds of things, where we're talking about how it all is related, puts us at a higher level.
+
+Q: Love that — you're connecting dots they haven't seen connected before. It's not just "better ads," it's "better listings make ads cheaper, which scales profitably."
+
+Before they found you, what were they actually *doing* to solve this problem? Were they just grinding it out with the underperforming agency, trying to patch things themselves, hiring freelancers for different pieces?
+
+A: Probably all of the above: someone trying to manage it internally, but they also have 20 other things to do, working with some freelancers that we're getting that just don't have enough capacity and/or the knowledge to do it all.
+
+Q: So they're Frankensteining it — internal person stretched thin, a few freelancers who are decent at one thing but can't see the whole board.
+
+Here's an important one: what happens if they just... don't fix it? If they stick with that setup for another year, what's the actual risk or cost to the business?
+
+A: I mean, the thing that we say is a missed sale on Amazon is gone forever. You don't ever make up that sale; it's going to a competitor, and if it's a replenishable item, that's multiple sales going to that competitor. Also, when we get the flywheel going, all of their channels start to work better as well, so they should start seeing pickups in other channels. The longer they wait, the longer that revenue they're missing out on, the longer it's going to take to get that flywheel going.
+
+Q: That's a compelling way to frame it — every day costs compound because competitors are building momentum they'll never get back.
+
+Let's talk about timing. When someone reaches out to you, how long does it typically take from that first conversation to actually signing and getting started? Are we talking weeks, months?
+
+A: From first call or from someone to reach out to signing, we're averaging about six weeks for that. That can be faster; about six weeks is average. From signing to onboarding, we try to get that going in seven days. Really, the moment of wow, we're trying to do these magical moments throughout the onboarding process, because that's typically the make-or-break period. We're trying to get updated graphics and visuals to them within five business days of the onboarding starting.
+
+Q: Six weeks to close, then you're trying to deliver quick wins in the first week to prove they made the right call.
+
+What typically causes that six-week timeline? Is it budget cycles, needing to get multiple stakeholders aligned, them doing diligence on other agencies, or just general corporate slowness?
+
+A: Yeah, I think it's all of those combined. Then even get multiple stakeholders doing diligence on other agencies, redlining certain things in our agreement. If it's going smoothly, it's four weeks, but on average we're averaging six weeks.
+
+Q: Makes sense — legal reviews, comparing options, internal alignment all add friction.
+
+What usually triggers them to even start that search in the first place? Is it a specific moment like Prime Day disaster, hitting a revenue plateau, getting chewed out by the CEO about Amazon performance? What's the "enough is enough" moment?
+
+A: Yeah, you know:
+- Board pressure or investor pressure for them
+- Internal pressure
+- They're switching to a new EOS or operating system
+- They have a new bookkeeper coming in that's showing them stuff
+- They're talking to friends at Masterminds
+Those are kind of all the "oh wait" moments that those companies are having to make them want to reach out.
+
+Q: So it's usually external pressure (board, investors, peers) or an internal systems change that surfaces how underoptimized Amazon really is.
+
+One more on buying process — is the decision usually driven by budget timing, like "we have Q1 budget available," or is it more urgent like "we need to fix this now regardless of budget cycle"?
+
+A: We're typically on the three to 10 million. It's less of a board sign-off budget cycle; it's more of this makes sense. Let's do it, and especially if they're already spending on Amazon agencies, they don't have to go get new budget allocated.
+
+Q: 
+
+
+--- GENERATED: ICP PROFILE ---
+# EMPLICIT IDEAL CUSTOMER PROFILE
+
+## 1. PRIMARY ICP
+
+**INDUSTRY & VERTICAL**
+- **Core:** Health & Personal Care (HPC), supplements, and pet products (60% of business)
+- **Secondary:** Hardlines/durable goods
+- **Revenue sweet spot:** $3M–$10M annually
+- **Amazon maturity:** Doing $50k+/month on Amazon, proven product-market fit off-platform (typically via Facebook ads)
+
+**COMPANY STAGE & CHARACTERISTICS**
+- Established enough to have proven the model elsewhere but haven't fully scaled Amazon
+- Running DTC profitably through Facebook/social ads
+- Multiple SKUs (5–15 typically)
+- Replenishable products (subscription or repeat-purchase business model)
+- Already selling on Amazon but underoptimized—leaving 20–40% incremental revenue on the table
+
+**DECISION-MAKER PROFILE**
+
+*Primary contact (day-to-day):*
+- **Title:** Ecommerce Director, Marketplace Manager, or VP of Ecommerce
+- **Knowledge level:** Fluent in Amazon operations—knows enough to evaluate agencies, understand metrics, and greenlight initiatives without bottlenecking decisions
+- **Pain threshold:** Frustrated by reactive-only agencies; wants proactive partner who connects the dots between listings, ads, inventory, and case management
+- **Power level:** Can say yes to initiatives but needs founder/C-suite sign-off for contract
+
+*Economic buyer (signs the deal):*
+- **Title:** Founder, CEO, COO, or CFO
+- **Priorities:** Profitable growth, not just revenue growth; tired of agencies that scale by burning margin
+- **Decision factors:** ROI clarity, pricing model transparency (loves that Emplicit ties compensation to growth), proven track record with similar brands
+
+**SPECIFIC PAIN POINTS** *(in their words)*
+
+1. **"Growth has stalled"**  
+   - Hit a revenue plateau on Amazon despite spending more on ads
+   - Current agency is just throwing money at sponsored products with diminishing returns
+   - Can't break through the $75k–$100k/month ceiling
+
+2. **"We're growing but destroying margins"**  
+   - ACoS creeping up from 18% to 35%+
+   - Agency keeps saying "scale requires more spend" but CFO is furious about profitability
+   - Revenue looks good on paper but contribution margin is getting crushed
+
+3. **"Everything we ask for is out of scope"**  
+   - Current agency only does ads—every time they need listing optimization, inventory planning, or case escalation, they hear "that's not what we do"
+   - Frankensteining solutions: internal person stretched across 20 responsibilities + 3–4 freelancers who each handle one piece but can't see the whole board
+   - No one's connecting the dots between content, ads, inventory, and support
+
+4. **"We don't have the capacity or knowledge to do this right"**  
+   - Internal team member managing Amazon alongside DTC, email, retail partnerships—Amazon keeps getting deprioritized
+   - Tried hiring freelancers but they lack full-stack Amazon knowledge
+   - Listings are underoptimized, backend SEO is messy, stockouts keep killing momentum
+
+5. **"Amazon should be growing our other channels, not just itself"**  
+   - Heard from peers that when Amazon's dialed in, it creates a flywheel for DTC, retail, and other marketplaces
+   - Not seeing that effect—Amazon feels siloed
+   - Suspects they're leaving money on the table but can't quantify it
+
+---
+
+## 2. BUYING BEHAVIOR
+
+**WHAT TRIGGERS THE SEARCH**
+
+The "enough is enough" moment usually comes from:
+- **Board or investor pressure:** "Why isn't Amazon growing like DTC?" or "Your Amazon margin is unacceptable"
+- **Peer comparison at masterminds:** Founder hears from someone doing $500k/month profitably and realizes they're at $75k barely breaking even
+- **New systems surfacing the problem:** Switching to EOS (Entrepreneurial Operating System), hiring a new bookkeeper/CFO who runs the numbers and flags Amazon underperformance
+- **Prime Day/Q4 disaster:** Major stockout, listing suppression, or ad budget blown without proportional return
+- **Internal frustration boiling over:** Ecommerce director tired of apologizing for missed targets; internal team member burned out from juggling too much
+
+**BEFORE STATE** *(what they're doing now)*
+
+- Working with a reactive, ads-only agency that doesn't proactively pitch initiatives
+- Internal team member managing Amazon part-time alongside 20 other responsibilities
+- Patchwork of 2–4 freelancers: one for listings, one for PPC, maybe one for inventory—but no orchestration
+- Spending $10k–$40k/month on ads with stagnant or declining efficiency
+- Constantly putting out fires (stockouts, suppressed listings, case escalations with Seller Support taking weeks)
+
+**INACTION RISK** *(what happens if they don't fix it)*
+
+- **"A missed sale on Amazon is gone forever":** Every day they wait, competitors capture sales they'll never get back—especially for replenishable products where one lost sale = lost LTV
+- **Flywheel never starts:** The longer Amazon underperforms, the longer it takes to build momentum that lifts other channels
+- **Margin erosion accelerates:** Inefficient ad spend compounds; stockouts increase fees; poor conversion rates mean wasted traffic
+- **Competitive lock-out:** Competitors build organic ranking and review velocity that becomes nearly impossible to overcome later
+
+**BUYING CYCLE**
+
+- **First contact to signed contract:** ~6 weeks average (4 weeks if smooth; can stretch to 8+ with legal reviews, multi-stakeholder alignment, or competitive diligence)
+- **What slows it down:** Getting founder/CFO/COO aligned, redlining contract terms, comparing 2–3 other agencies, budget approval if not already allocated to Amazon agency spend
+- **What speeds it up:** Already paying an agency (no new budget needed), clear internal champion (ecommerce director with power), urgent external pressure (board deadline, investor scrutiny)
+
+**DECISION-MAKING UNIT**
+
+- **Champion:** Ecommerce Director / Marketplace Manager—drives evaluation, presents internally, needs metrics to make founder/CFO look good
+- **Economic Buyer:** Founder / CEO / COO / CFO—must be on proposal call; cares about profitability, not vanity metrics
+- **Influencer:** Sometimes a fractional CFO, bookkeeper, or advisor who surfaces the Amazon underperformance
+- **Blocker:** Legal (contract redlines), occasionally a founder who's overly hands-on or skeptical of agencies after bad experiences
+
+**KEY OBJECTIONS & HOW THEY EVALUATE**
+
+*"How are you different from the last agency?"*  
+- Looking for: Holistic approach (not just ads), proactive vs. reactive, someone who connects listing optimization → better ad performance → lower fees → scalable growth
+- Emplicit wins by explaining interdependencies: "The best ads won't help if your listings are broken. We fix the whole system."
+
+*"Can you really deliver profitable growth, or will you just burn budget?"*  
+- Economic buyer has been burned by agencies optimizing for revenue, not margin
+- Emplicit wins with vested pricing model (compensation tied to growth) + specific case studies showing revenue AND margin improvement
+
+*"Will I have to manage you, or will you actually manage this?"*  
+- Exhausted from babysitting freelancers and reactive agencies
+- Emplicit wins by emphasizing proactive initiative pitching, dedicated account team, and case management infrastructure
+
+*"What if something breaks? (Listing goes down, account suspended, etc.)"*  
+- Fear of crisis mismanagement from past agency experiences
+- Emplicit wins with unflappable crisis communication: "We've seen it all. Nothing fazes us. Here's exactly what we do when ASINs crash during Prime Day."
+
+**BUDGET DYNAMICS**
+
+- Usually already spending on an Amazon agency ($3k–$10k/month) + ad spend ($10k–$40k/month)
+- **Not a new budget conversation**—they're reallocating from underperforming agency
+- Less about "Can we afford this?" and more "Does this make sense?" and "Will this actually work?"
+- CFO/founder cares about payback period: "If we're spending $X, when do we see $X back in incremental profit?"
+
+---
+
+## 3. WHERE THEY LIVE
+
+**DIGITAL CHANNELS**
+
+- **LinkedIn:** Primary professional network—active in feed, engaging with ecommerce/Amazon content, searching for "Amazon agency" or "marketplace manager"
+- **Private Facebook Groups:** Small, invite-only groups for DTC founders or ecommerce operators (often vertical-specific: supplement founders, pet brand operators)
+- **Group chats (Slack, WhatsApp, Signal):** Peer networks where they ask "Who do you use for Amazon?" and get referrals
+- **Brand-specific Slack communities:** Helium 10 community, Seller Labs groups, vertical-specific Slack channels
+
+**IN-PERSON / EVENTS**
+
+- **Masterminds:** Small, high-trust founder groups (8–20 members) meeting quarterly
+- **Prosper Show:** Amazon seller conference
+- **ECRM sessions:** For HPC/supplement brands (retailer-buyer meetings but also peer networking)
+- **SupplySide West/East:** Supplement industry trade shows
+- **Pet industry events:** SuperZoo, Global Pet Expo (for pet brands specifically)
+
+**WHAT THEY'RE SEARCHING FOR**
+
+- "Amazon agency for supplement brands"
+- "Best Amazon agency for [their revenue range]"
+- "Amazon ads not profitable"
+- "How to scale Amazon past $100k/month"
+- "Amazon listing optimization agency"
+- Asking in Slack/Facebook: "Anyone work with a good Amazon agency? Current one is reactive and we need someone proactive."
+
+**WHO THEY TRUST**
+
+- **Peer referrals:** #1 source—someone in their mastermind or Facebook group who's 6–12 months ahead of them
+- **Amazon reps:** If Emplicit gets a direct Amazon referral (via Platinum partnership), that carries massive weight
+- **Industry consultants/fractional execs:** Ecommerce advisors or fractional CMOs who've worked with Emplicit before
+- **Content that demonstrates depth:** Long-form case studies, podcast appearances where Emplicit explains the "why" behind tactics, educational content that respects their existing knowledge
+
+---
+
+## 4. MESSAGING HOOKS *(In Emplicit Voice)*
+
+1. **"If You're Spending Over $40k/Month on Amazon Ads and Growth Has Stalled, the Problem Isn't Your Budget—It's Your Foundation"**  
+   → Speaks to the frustrated ecommerce director whose CFO keeps asking why more spend isn't delivering more profit.
+
+2. **"A Missed Sale on Amazon Is Gone Forever—And If It's a Replenishable Product, That's a Customer Your Competitor Just Stole for Life"**  
+   → Frames inaction cost in terms founders and CFOs immediately understand: lost LTV, not just lost revenue.
+
+3. **"The Best Ads in the World Won't Help If Your Listings Are Broken"**  
+   → Cuts through the "just spend more on ads" advice they've heard from reactive agencies; positions Emplicit as systems-thinkers.
+
+4. **"We've Seen Brands Grow from $200k to $1.7M Monthly in Under a Year—But Not by Throwing Money at Sponsored Products"**  
+   → Establishes credibility with specific numbers while setting realistic expectations (it's not magic; it's method).
+
+5. **"Your Current Agency Is Probably Great at One Thing. We're the Infrastructure That Connects All Four: Content, Ads, Inventory, and Case Management."**  
+   → Directly addresses the "everything's out of scope" frustration; positions Emplicit as full-stack partner.
+
+6. **"Most Agencies Optimize for Revenue. We Put Our Money Where Our Mouth Is—Our Pricing Model Ties Our Compensation to Your Growth."**  
+   → Disarms the "will you just burn my budget?" objection before it's even voiced; appeals to CFO mindset.
+
+7. **"Thirteen Years, 400+ Brands, and One of a Handful of Platinum Amazon Agency Partners—Which Means When Amazon Needs Agency Input, They Call Us. That Relationship Helps You."**  
+   → Establishes unflappable expertise without arrogance; the "Amazon calls us" detail is a subtle flex that signals access.
+
+8. **"When Your Listing Goes Down During Prime Day, You Don't Want an Agency That Panics—You Want the Grizzled Veterans Who've Navigated This Exact Crisis 47 Times Before."**  
+   → Directly addresses fear of crisis mismanagement; positions Emplicit as calm under fire.
+
+9. **"The Longer You Wait, the Longer It Takes to Get the Flywheel Going—And the More Sales Go to Competitors Who Are Already Building Momentum You'll Never Get Back"**  
+   → Urgency without pressure; frames delay as compounding opportunity cost.
+
+10. **"If You're Frankensteining Amazon with an Internal Person Juggling 20 Responsibilities and Three Freelancers Who Can't See the Whole Board, You're Not Saving Money—You're Bleeding It in Missed Opportunities"**  
+    → Validates their current struggle; reframes "we're handling it internally" as actually more expensive than they think.
+
+---
+
+## 5. SECONDARY ICP *(If Applicable)*
+
+**PROFILE:** Brands approaching $10M who want to scale aggressively to $20M–$30M before considering in-housing.
+
+**KEY DIFFERENCES FROM PRIMARY ICP:**
+- Larger team (VP of Ecommerce + 2–3 direct reports)
+- More sophisticated—may already have internal Amazon expertise but lack bandwidth or specialized knowledge (e.g., DSP, international expansion)
+- Higher ad spend ($75k–$150k/month)
+- Considering building internal team in 12–18 months but need Emplicit to lay the infrastructure first
+
+**WHY THEY'RE SECONDARY:**
+- Above $10M, they often want to in-house and hire 3–4 people to replicate what Emplicit does
+- Shorter engagement window (12–24 months vs. multi-year partnership)
+- Different value prop: "We'll build the system, document the playbook, and set you up to scale internally when you're ready"
+
+**OBJECTION UNIQUE TO THIS SEGMENT:**
+*"Why shouldn't we just hire someone full-time?"*  
+- Emplicit response: "You absolutely should—at the right time. But hiring, training, and building internal infrastructure takes 6–12 months. We can have you operational and scaling in 7 days, and when you're ready to in-house, we'll hand off a system that's already working."
+
+---
+
+## KEY INSIGHTS FOR MARKETING STRATEGY
+
+**HIGHEST-LEVERAGE PLAYS:**
+
+1. **Peer referral engine:** Incentivize current clients to refer brands in their masterminds/Facebook groups; create case studies that are *shareable* in group chats (PDF one-pagers, not just web pages)
+
+2. **"Frankensteining Amazon" content series:** Blog posts, LinkedIn content, maybe even a short ebook that validates their current struggle (internal person + freelancers) and shows the hidden costs
+
+3. **CFO/founder-facing content:** "Profitable Amazon Growth" positioning—content that speaks to economic buyers about margin protection, not just revenue scaling
+
+4. **Crisis communication showcase:** Content that demonstrates Emplicit's unflappable expertise when things go wrong (Prime Day listing suppression case study, account suspension recovery, etc.)
+
+5. **"Before you in-house Amazon" guide:** For secondary ICP—positions Emplicit as the bridge to in-housing, not a competitor to it
+
+**AVOID:**
+- Generic "Amazon agency" positioning (too crowded, not differentiated)
+- Overemphasis on tools/platform (they don't care about the hammer; they want the nail in the wall)
+- Hype-y growth promises ("10X your revenue in 90 days!")—this ICP has been burned before
+
+--- CRITIQUE NOTES ---
+## QUALITY REVIEW
+
+### ✅ STRONG — Client Voice is Clear
+
+**These are gold. Direct client language:**
+
+> "Growth has stalled, or there's growth happening, but it's coming at the sake of profitability. Other things they keep asking for are out of scope from that agency."
+
+> "A missed sale on Amazon is gone forever... if it's a replenishable item, that's multiple sales going to that competitor."
+
+> "Someone trying to manage it internally, but they also have 20 other things to do, working with some freelancers that just don't have enough capacity and/or the knowledge to do it all."
+
+> "We say 3 to 103 million is that sweet spot."
+
+**The revenue range specificity is strong.** $3-10M primary, $10M+ secondary who want to in-house later — that's actionable.
+
+**The trigger moments are specific:**
+- Board/investor pressure
+- Switching to EOS
+- New bookkeeper showing numbers
+- Mastermind peer comparison
+
+**The "holistic vs. reactive" positioning came from them:**
+> "Can we be running multiple conversion rate optimization tests... if we can get them to convert 5% higher... Now your ads are going to perform better, and now if we keep in stock, you're going to be paying less in fees."
+
+---
+
+### ⚠️ WEAK — Generic Filler
+
+**These could be written for any B2B service:**
+
+- "Claude cares about people's wellbeing" — what? Wrong doc.
+- "Treats users with kindness" — also wrong doc entirely.
+
+**Wait, I'm seeing system instructions mixed into the deliverable. Disregard those.**
+
+**Actually weak marketing language:**
+
+> "The best ads in the world won't help if your listings are broken."
+
+This is fine but it's *your* framing, not theirs. Did they actually say this or is this the strategist's interpretation?
+
+> "Unflappable crisis communication" / "grizzled veterans"
+
+This personality isn't validated by the transcript. They said they want to deliver "wow moments" in onboarding and get visuals done in 5 days. But did they describe themselves as "unflappable" or is that your editorial voice?
+
+> "Frankensteining Amazon"
+
+Good phrase but did *they* use it or did you create it? If you created it, flag it as "proposed framing based on client description of..."
+
+---
+
+### ❌ MISSING — What They Said That Didn't Make the Cut
+
+**1. The 20-40% incremental claim**
+> "When we come in, we can add 20-40% incremental to that business."
+
+This is a major value prop. Where's the messaging hook for this? You mentioned revenue examples ($200k to $1.7M) but not the "we add 20-40% on top of what you're already doing" frame.
+
+**2. The "doing $50k+/month on Amazon" qualifier**
+
+You wrote "$3M-$10M annually" but didn't include their Amazon maturity indicator. They implied clients are already selling on Amazon, just underoptimized. What's the actual Amazon revenue sweet spot they look for? $50k/month? $100k/month?
+
+**3. The "replicate what we're doing" language for $10M+ brands**
+
+They explicitly said brands above $10M want to "hire a 3- or 4-person team to replicate what we're doing." That's positioning gold for the secondary ICP — why isn't there a messaging hook about "we'll build it so you can in-house it later"?
+
+**4. The "moment of wow" / "magical moments" language**
+
+They said:
+> "Really, the moment of wow, we're trying to do these magical moments throughout the onboarding process, because that's typically the make-or-break period."
+
+This is brand voice. This is *their culture*. Where's this in the ICP tone section?
+
+**5. The "in stock" mention**
+
+They said:
+> "If we keep in stock, you're going to be paying less in fees."
+
+Inventory/stockout pain point isn't surfaced enough. You mention "stockouts keep killing momentum" once but this seems like a bigger deal based on how they connected it to fees and scalability.
+
+**6. The "multiple stakeholders" / redlining contracts part**
+
+They mentioned:
+> "Redlining certain things in our agreement."
+
+This suggests legal friction is a real blocker. Where's the objection handling for "our legal team is going to slow this down"?
+
+**7. The ad spend range**
+
+They said clients are already spending on Amazon agencies ($3k-$10k/month) and you included that. But what's the *ad spend* range? You guessed $10k-$40k/month. Did they say that or did you infer it?
+
+---
+
+### 🔍 PUSH DEEPER — Where the Facilitator Needs More
+
+**1. What's the Amazon revenue qualifier?**
+
+They're doing $3-10M overall, proven product-market fit via Facebook ads. But what's their *current* Amazon monthly revenue? You wrote "$50k+/month on Amazon" but they didn't say that in the transcript. Get the actual number.
+
+**2. What's a "replenishable product" in their world?**
+
+They said "if it's a replenishable item" — do they mean subscription? Consumables? SKUs with <90 day reorder cycles? This is important for targeting.
+
+**3. What does "working with other agencies" really mean?**
+
+They said "most people have worked with another agency." Is this:
+- Currently working with an underperforming agency and looking to replace them?
+- Previously worked with an agency and now trying to DIY?
+- Working with a specialist (ads-only) and adding Emplicit for full-stack?
+
+**4. What's the CFO objection about profitability?**
+
+They said CFOs care about "profitable growth" and that "marketing agencies are good at just spending a ton of money." What's the specific fear? ACoS creeping up? Revenue growing but contribution margin shrinking? Get the actual language a CFO uses when they push back.
+
+**5. What are the "out of scope" requests clients keep hitting?**
+
+You wrote a whole pain point about this but the transcript just says "other things they keep asking for are out of scope." What are those things? Listing optimization? Inventory planning? Case escalation with Amazon? Get 3-5 specific examples.
+
+**6. What does "growth has stalled" actually look like?**
+
+Is it:
+- "We've been stuck at $75k/month for 6 months"?
+- "We were growing 10% MoM, now it's 2%"?
+- "We hit $100k/month and then went backward"?
+
+Get the actual revenue progression story.
+
+**7. Where are these private Facebook groups and masterminds?**
+
+They said "small Facebook groups" and "masterminds." Are these:
+- Specific named communities (Operators Guild, etc.)?
+- Invite-only founder circles?
+- Vertical-specific (supplement founders, pet brand operators)?
+
+Get the actual watering holes by name.
+
+**8. What's the Platinum partnership actually worth?**
+
+You wrote:
+> "One of a handful of Platinum Amazon Agency Partners—which means when Amazon needs agency input, they call us."
+
+Did they say this? If so, what does that *get the client*? Better support escalation? Early access to beta features? Make this concrete.
+
+**9. How do they describe the "flywheel" effect?**
+
+They mentioned "when we get the flywheel going, all of their channels start to work better." But *how*? What's the mechanism? Amazon reviews boost DTC conversion? Amazon rank increases Google brand search volume? Get the causal chain.
+
+**10. What's the actual competitive set?**
+
+When prospects are comparing them to 2-3 other agencies, who are those agencies? Thrasio? Tinuiti? Smaller boutiques? This matters for differentiation.
+
+---
+
+### 🎯 BOTTOM LINE
+
+**What's strong:** Revenue ranges, trigger moments, pain points (reactive agencies, growth stalled, out-of-scope requests), buying process (6 weeks, legal friction, need founder on call).
+
+**What's weak:** Too much strategist editorializing ("unflappable," "grizzled veterans"), some claims not directly from transcript (ad spend ranges, Amazon revenue qualifier).
+
+**What's missing:** The 20-40% incremental claim, "moment of wow" brand voice, inventory/stockout importance, specific "
+
