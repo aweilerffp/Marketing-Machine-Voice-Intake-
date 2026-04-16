@@ -2,6 +2,62 @@
   "type": "object",
   "required": ["themes", "coverage_check", "client_reflection"],
   "additionalProperties": false,
+  "$defs": {
+    "theme_section": {
+      "type": "object",
+      "required": ["section_title", "insights", "verbatim_quotes", "explicit_dont"],
+      "additionalProperties": false,
+      "properties": {
+        "section_title": { "type": "string" },
+        "insights": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label", "value", "evidence"],
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string" },
+              "value": { "type": "string" },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "verbatim_quotes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["quote", "speaker", "context"],
+            "additionalProperties": false,
+            "properties": {
+              "quote": { "type": "string" },
+              "speaker": { "type": "string" },
+              "context": { "type": "string" }
+            }
+          }
+        },
+        "explicit_dont": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "coverage_question": {
+      "type": "object",
+      "required": ["question_number", "question_text", "covered", "coverage_depth", "evidence_summary", "gap_description"],
+      "additionalProperties": false,
+      "properties": {
+        "question_number": { "type": "integer" },
+        "question_text": { "type": "string" },
+        "covered": { "type": "boolean" },
+        "coverage_depth": {
+          "type": "string",
+          "enum": ["not_covered", "partially_covered", "fully_covered"]
+        },
+        "evidence_summary": { "type": "string" },
+        "gap_description": { "type": "string" }
+      }
+    }
+  },
   "properties": {
     "themes": {
       "type": "object",
@@ -14,216 +70,16 @@
       ],
       "additionalProperties": false,
       "properties": {
-        "current_marketing_state": {
-          "type": "object",
-          "required": ["section_title", "insights", "verbatim_quotes", "explicit_dont"],
-          "additionalProperties": false,
-          "properties": {
-            "section_title": { "type": "string" },
-            "insights": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": ["label", "value", "evidence"],
-                "additionalProperties": false,
-                "properties": {
-                  "label": { "type": "string" },
-                  "value": { "type": "string" },
-                  "evidence": { "type": "string" }
-                }
-              }
-            },
-            "verbatim_quotes": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": ["quote", "speaker", "context"],
-                "additionalProperties": false,
-                "properties": {
-                  "quote": { "type": "string" },
-                  "speaker": { "type": "string" },
-                  "context": { "type": "string" }
-                }
-              }
-            },
-            "explicit_dont": {
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        },
-        "goals_and_success_metrics": {
-          "type": "object",
-          "required": ["section_title", "insights", "verbatim_quotes", "explicit_dont"],
-          "additionalProperties": false,
-          "properties": {
-            "section_title": { "type": "string" },
-            "insights": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": ["label", "value", "evidence"],
-                "additionalProperties": false,
-                "properties": {
-                  "label": { "type": "string" },
-                  "value": { "type": "string" },
-                  "evidence": { "type": "string" }
-                }
-              }
-            },
-            "verbatim_quotes": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": ["quote", "speaker", "context"],
-                "additionalProperties": false,
-                "properties": {
-                  "quote": { "type": "string" },
-                  "speaker": { "type": "string" },
-                  "context": { "type": "string" }
-                }
-              }
-            },
-            "explicit_dont": {
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        },
-        "team_and_resources": {
-          "type": "object",
-          "required": ["section_title", "insights", "verbatim_quotes", "explicit_dont"],
-          "additionalProperties": false,
-          "properties": {
-            "section_title": { "type": "string" },
-            "insights": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": ["label", "value", "evidence"],
-                "additionalProperties": false,
-                "properties": {
-                  "label": { "type": "string" },
-                  "value": { "type": "string" },
-                  "evidence": { "type": "string" }
-                }
-              }
-            },
-            "verbatim_quotes": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": ["quote", "speaker", "context"],
-                "additionalProperties": false,
-                "properties": {
-                  "quote": { "type": "string" },
-                  "speaker": { "type": "string" },
-                  "context": { "type": "string" }
-                }
-              }
-            },
-            "explicit_dont": {
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        },
-        "channel_preferences": {
-          "type": "object",
-          "required": ["section_title", "insights", "verbatim_quotes", "explicit_dont"],
-          "additionalProperties": false,
-          "properties": {
-            "section_title": { "type": "string" },
-            "insights": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": ["label", "value", "evidence"],
-                "additionalProperties": false,
-                "properties": {
-                  "label": { "type": "string" },
-                  "value": { "type": "string" },
-                  "evidence": { "type": "string" }
-                }
-              }
-            },
-            "verbatim_quotes": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": ["quote", "speaker", "context"],
-                "additionalProperties": false,
-                "properties": {
-                  "quote": { "type": "string" },
-                  "speaker": { "type": "string" },
-                  "context": { "type": "string" }
-                }
-              }
-            },
-            "explicit_dont": {
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        },
-        "strategic_context": {
-          "type": "object",
-          "required": ["section_title", "insights", "verbatim_quotes", "explicit_dont"],
-          "additionalProperties": false,
-          "properties": {
-            "section_title": { "type": "string" },
-            "insights": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": ["label", "value", "evidence"],
-                "additionalProperties": false,
-                "properties": {
-                  "label": { "type": "string" },
-                  "value": { "type": "string" },
-                  "evidence": { "type": "string" }
-                }
-              }
-            },
-            "verbatim_quotes": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": ["quote", "speaker", "context"],
-                "additionalProperties": false,
-                "properties": {
-                  "quote": { "type": "string" },
-                  "speaker": { "type": "string" },
-                  "context": { "type": "string" }
-                }
-              }
-            },
-            "explicit_dont": {
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        }
+        "current_marketing_state": { "$ref": "#/$defs/theme_section" },
+        "goals_and_success_metrics": { "$ref": "#/$defs/theme_section" },
+        "team_and_resources": { "$ref": "#/$defs/theme_section" },
+        "channel_preferences": { "$ref": "#/$defs/theme_section" },
+        "strategic_context": { "$ref": "#/$defs/theme_section" }
       }
     },
     "coverage_check": {
       "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["question_number", "question_text", "covered", "coverage_depth", "evidence_summary", "gap_description"],
-        "additionalProperties": false,
-        "properties": {
-          "question_number": { "type": "integer" },
-          "question_text": { "type": "string" },
-          "covered": { "type": "boolean" },
-          "coverage_depth": {
-            "type": "string",
-            "enum": ["not_covered", "partially_covered", "fully_covered"]
-          },
-          "evidence_summary": { "type": "string" },
-          "gap_description": { "type": "string" }
-        }
-      }
+      "items": { "$ref": "#/$defs/coverage_question" }
     },
     "client_reflection": { "type": "string" }
   }
