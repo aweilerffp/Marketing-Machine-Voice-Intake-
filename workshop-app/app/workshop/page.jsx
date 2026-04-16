@@ -39,7 +39,7 @@ export default function WorkshopPage() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+        style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
       >
         <PhaseContent phase={state.currentPhase} />
       </motion.div>

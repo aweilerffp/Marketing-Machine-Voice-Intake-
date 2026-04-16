@@ -10,10 +10,9 @@ export default function TranscriptStream({ transcript, currentSpeaker, isActive 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    // Only auto-scroll if user is near the bottom (within 150px)
     const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
     if (isNearBottom) {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      container.scrollTop = container.scrollHeight;
     }
   }, [transcript]);
 
