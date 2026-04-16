@@ -28,6 +28,7 @@ function ElevenLabsSessionInner() {
 
   const [transcript, setTranscript] = useState('');
   const [activeBubble, setActiveBubble] = useState(null);
+  const [error, setError] = useState(null);
   const transcriptSaved = useRef(false);
   const lastAgentMessage = useRef('');
   const lastUserMessage = useRef('');
@@ -39,7 +40,11 @@ function ElevenLabsSessionInner() {
     mode,
     isSpeaking,
   } = useConversation({
+    onConnect: () => {
+      console.log('ElevenLabs: connected');
+    },
     onMessage: (event) => {
+      console.log('ElevenLabs message:', event.type, event);
       if (event.type === 'agent_response') {
         const text = event.agent_response_event?.agent_response;
         if (text && text !== lastAgentMessage.current) {
@@ -56,11 +61,15 @@ function ElevenLabsSessionInner() {
     },
     onError: (error) => {
       console.error('ElevenLabs error:', error);
+      setError(typeof error === 'string' ? error : error?.message || JSON.stringify(error));
     },
-    onDisconnect: () => {
+    onDisconnect: (details) => {
+      console.log('ElevenLabs: disconnected', details);
       saveTranscriptOnce();
     },
   });
+
+  console.log('ElevenLabs status:', status, 'AGENT_ID:', AGENT_ID);
 
   const isActive = status === 'connected';
   const isComplete = status === 'disconnected' && transcript.length > 0;
@@ -68,10 +77,16 @@ function ElevenLabsSessionInner() {
 
   // Start session on mount
   useEffect(() => {
-    if (status === 'idle' && AGENT_ID) {
-      startSession({ agentId: AGENT_ID });
+    console.log('ElevenLabs useEffect - status:', status, 'agentId:', AGENT_ID);
+    if (AGENT_ID && (status === 'idle' || status === undefined)) {
+      try {
+        startSession({ agentId: AGENT_ID });
+      } catch (e) {
+        console.error('startSession failed:', e);
+        setError(e.message);
+      }
     }
-  }, [status, startSession]);
+  }, []);
 
   // Nugget detection
   const handleNuggetsFound = useCallback((nuggets) => {
@@ -108,6 +123,19 @@ function ElevenLabsSessionInner() {
       flexDirection: 'column',
       overflow: 'hidden',
     }}>
+      {/* Debug info — remove later */}
+      {(error || !isActive) && (
+        <div style={{
+          padding: '8px 24px',
+          fontSize: 12,
+          background: error ? 'rgba(239,68,68,0.1)' : 'rgba(59,130,246,0.1)',
+          color: error ? '#EF4444' : '#94A3B8',
+          borderBottom: `1px solid ${BORDER}`,
+        }}>
+          Status: {status || 'unknown'} | Agent: {AGENT_ID ? AGENT_ID.slice(0, 15) + '...' : 'MISSING'}
+          {error && <> | Error: {error}</>}
+        </div>
+      )}
       {/* Section header — pinned at top */}
       <div style={{
         display: 'flex',
