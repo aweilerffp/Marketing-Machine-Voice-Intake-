@@ -2,18 +2,30 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 
-const MIN_CHUNK_SIZE = 200; // characters before checking for nuggets
-const DEBOUNCE_MS = 3000;  // wait 3s after last transcript update
+const MIN_CHUNK_SIZE = 300;
+const CHECK_INTERVAL_MS = 8000;
 
 export function useNuggetDetection(transcript, isActive, onNuggetsFound, existingNuggets = []) {
   const lastCheckedLength = useRef(0);
-  const timerRef = useRef(null);
+  const intervalRef = useRef(null);
+  const transcriptRef = useRef(transcript);
+  const existingRef = useRef(existingNuggets);
+  const onFoundRef = useRef(onNuggetsFound);
+  const inFlightRef = useRef(false);
+
+  transcriptRef.current = transcript;
+  existingRef.current = existingNuggets;
+  onFoundRef.current = onNuggetsFound;
 
   const checkForNuggets = useCallback(async () => {
-    const newText = transcript.slice(lastCheckedLength.current);
+    if (inFlightRef.current) return;
+
+    const currentTranscript = transcriptRef.current;
+    const newText = currentTranscript.slice(lastCheckedLength.current);
     if (newText.trim().length < MIN_CHUNK_SIZE) return;
 
-    lastCheckedLength.current = transcript.length;
+    lastCheckedLength.current = currentTranscript.length;
+    inFlightRef.current = true;
 
     try {
       const res = await fetch('/api/nuggets', {
@@ -21,32 +33,32 @@ export function useNuggetDetection(transcript, isActive, onNuggetsFound, existin
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           transcript_chunk: newText,
-          existing_nuggets: existingNuggets.map(n => n.text),
+          existing_nuggets: existingRef.current.map(n => n.text),
         }),
       });
 
       if (!res.ok) return;
       const data = await res.json();
       if (data.nuggets && data.nuggets.length > 0) {
-        onNuggetsFound(data.nuggets);
+        onFoundRef.current(data.nuggets);
       }
     } catch {
-      // Non-critical — silently skip
+      // Non-critical
+    } finally {
+      inFlightRef.current = false;
     }
-  }, [transcript, existingNuggets, onNuggetsFound]);
+  }, []);
 
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      return;
+    }
 
-    const newChars = transcript.length - lastCheckedLength.current;
-    if (newChars < MIN_CHUNK_SIZE) return;
-
-    // Debounce: wait for a pause in the transcript
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(checkForNuggets, DEBOUNCE_MS);
+    intervalRef.current = setInterval(checkForNuggets, CHECK_INTERVAL_MS);
 
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [transcript, isActive, checkForNuggets]);
+  }, [isActive, checkForNuggets]);
 }
