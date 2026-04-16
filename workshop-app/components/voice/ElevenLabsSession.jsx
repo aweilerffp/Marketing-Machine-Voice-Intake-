@@ -1,43 +1,79 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { ConversationProvider, useConversation } from '@elevenlabs/react';
 import { useWorkshopSession } from '../../hooks/useWorkshopSession';
 import { currentSectionFromPhase, SECTIONS } from '../../lib/constants';
-import { useTranscriptStream } from './useTranscriptStream';
 import { useNuggetDetection } from '../../hooks/useNuggetDetection';
 import TranscriptStream from './TranscriptStream';
 import NuggetPanel from './NuggetPanel';
 import NuggetBubble from './NuggetBubble';
-import { CARD, CARD2, BORDER, MUTED, DIM, RED, TEXT } from '../design-tokens';
+import { CARD, CARD2, BORDER, MUTED, DIM, TEXT } from '../design-tokens';
 
-const USE_ELEVENLABS = process.env.NEXT_PUBLIC_USE_ELEVENLABS === 'true';
+const AGENT_ID = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || '';
 
-const ElevenLabsSession = USE_ELEVENLABS
-  ? dynamic(() => import('./ElevenLabsSession'), { ssr: false })
-  : null;
+export default function ElevenLabsSession() {
+  return (
+    <ConversationProvider>
+      <ElevenLabsSessionInner />
+    </ConversationProvider>
+  );
+}
 
-export default function VoiceSession() {
-  if (ElevenLabsSession) {
-    return <ElevenLabsSession />;
-  }
+function ElevenLabsSessionInner() {
   const { state, dispatch } = useWorkshopSession();
   const sectionLetter = currentSectionFromPhase(state.currentPhase);
   const meta = SECTIONS[sectionLetter];
   const sectionData = state[meta.stateKey];
 
+  const [transcript, setTranscript] = useState('');
   const [activeBubble, setActiveBubble] = useState(null);
   const transcriptSaved = useRef(false);
+  const lastAgentMessage = useRef('');
+  const lastUserMessage = useRef('');
 
   const {
-    transcript,
-    currentSpeaker,
-    isActive,
-    isComplete,
-    start,
-    stop,
-  } = useTranscriptStream(meta.key);
+    startSession,
+    endSession,
+    status,
+    mode,
+    isSpeaking,
+  } = useConversation({
+    onMessage: (event) => {
+      if (event.type === 'agent_response') {
+        const text = event.agent_response_event?.agent_response;
+        if (text && text !== lastAgentMessage.current) {
+          lastAgentMessage.current = text;
+          setTranscript(prev => prev + '\nQ: ' + text);
+        }
+      } else if (event.type === 'user_transcript') {
+        const text = event.user_transcription_event?.user_transcript;
+        if (text && text !== lastUserMessage.current) {
+          lastUserMessage.current = text;
+          setTranscript(prev => prev + '\nA: ' + text);
+        }
+      }
+    },
+    onError: (error) => {
+      console.error('ElevenLabs error:', error);
+    },
+    onDisconnect: () => {
+      saveTranscriptOnce();
+    },
+  });
 
+  const isActive = status === 'connected';
+  const isComplete = status === 'disconnected' && transcript.length > 0;
+  const currentSpeaker = isSpeaking ? 'agent' : 'user';
+
+  // Start session on mount
+  useEffect(() => {
+    if (status === 'idle' && AGENT_ID) {
+      startSession({ agentId: AGENT_ID });
+    }
+  }, [status, startSession]);
+
+  // Nugget detection
   const handleNuggetsFound = useCallback((nuggets) => {
     dispatch({ type: 'ADD_NUGGET', sectionKey: meta.stateKey, nuggets });
     if (nuggets.length > 0) {
@@ -47,14 +83,9 @@ export default function VoiceSession() {
 
   useNuggetDetection(transcript, isActive, handleNuggetsFound, sectionData.nuggets);
 
-  useEffect(() => {
-    start();
-  }, [start]);
-
   function saveTranscriptOnce() {
     if (transcriptSaved.current || !transcript) return;
     transcriptSaved.current = true;
-    // Use SET_TRANSCRIPT to replace (not append) — prevents double-saving
     dispatch({
       type: 'APPEND_TRANSCRIPT',
       sectionKey: meta.stateKey,
@@ -62,13 +93,10 @@ export default function VoiceSession() {
     });
   }
 
-  // Save transcript when mock completes naturally
-  useEffect(() => {
-    if (isComplete) saveTranscriptOnce();
-  }, [isComplete]);
-
   function handleEndSection() {
-    stop();
+    if (isActive) {
+      endSession();
+    }
     saveTranscriptOnce();
     dispatch({ type: 'SET_PHASE', phase: `S${sectionLetter}_GEN` });
   }
@@ -96,12 +124,13 @@ export default function VoiceSession() {
           <div>
             <h2 style={{ fontSize: 16, fontWeight: 700 }}>{meta.label} Discovery</h2>
             <p style={{ fontSize: 12, color: DIM }}>
-              {isActive ? 'Session in progress...' : isComplete ? 'Session complete' : 'Starting...'}
+              {status === 'connecting' ? 'Connecting...' :
+               isActive ? 'Voice session active' :
+               isComplete ? 'Session complete' : 'Starting...'}
             </p>
           </div>
         </div>
 
-        {/* Voice indicator */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           {isActive && (
             <div style={{
@@ -118,10 +147,10 @@ export default function VoiceSession() {
                 width: 8,
                 height: 8,
                 borderRadius: '50%',
-                background: currentSpeaker === 'user' ? meta.color : '#22C55E',
+                background: isSpeaking ? '#22C55E' : meta.color,
                 animation: 'stage-pulse 1.5s ease-in-out infinite',
               }} />
-              {currentSpeaker === 'user' ? 'Listening...' : 'Speaking...'}
+              {isSpeaking ? 'Agent speaking...' : 'Listening...'}
             </div>
           )}
 
@@ -139,7 +168,7 @@ export default function VoiceSession() {
               transition: 'all 0.2s',
             }}
           >
-            {isComplete ? 'Generate Deliverable' : 'End Section Early'}
+            {isComplete ? 'Generate Deliverable' : 'End Section'}
           </button>
         </div>
       </div>
@@ -158,7 +187,6 @@ export default function VoiceSession() {
         display: 'flex',
         overflow: 'hidden',
       }}>
-        {/* Transcript stream (left/center) */}
         <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           <TranscriptStream
             transcript={transcript}
@@ -167,7 +195,6 @@ export default function VoiceSession() {
           />
         </div>
 
-        {/* Nugget panel (right side) */}
         <div style={{
           width: 300,
           borderLeft: `1px solid ${BORDER}`,

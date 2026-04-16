@@ -13,7 +13,6 @@ export function useTranscriptStream(sectionKey) {
   const start = useCallback(async () => {
     if (sourceRef.current) return;
 
-    // Fetch mock transcript
     const url = MOCK_TRANSCRIPTS[sectionKey];
     const res = await fetch(url);
     const text = await res.text();
@@ -49,7 +48,6 @@ export function useTranscriptStream(sectionKey) {
     }
   }, []);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (sourceRef.current) {
