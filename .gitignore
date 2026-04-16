@@ -7,3 +7,4 @@ transcripts/*
 !transcripts/test-*
 outputs/*
 !outputs/.gitkeep
+.next/
