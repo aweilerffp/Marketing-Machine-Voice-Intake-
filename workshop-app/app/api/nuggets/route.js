@@ -32,7 +32,11 @@ export async function POST(request) {
       return Response.json({ nuggets: [] });
     }
 
-    const parsed = JSON.parse(textBlock.text);
+    let raw = textBlock.text.trim();
+    if (raw.startsWith('```')) {
+      raw = raw.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '');
+    }
+    const parsed = JSON.parse(raw);
     return Response.json({ nuggets: parsed.nuggets || [] });
   } catch (err) {
     console.error('Nugget detection error:', err);
