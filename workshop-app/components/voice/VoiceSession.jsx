@@ -70,7 +70,7 @@ export default function VoiceSession() {
       flexDirection: 'column',
       overflow: 'hidden',
     }}>
-      {/* Section header */}
+      {/* Section header — pinned at top */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -78,6 +78,8 @@ export default function VoiceSession() {
         padding: '12px 24px',
         borderBottom: `1px solid ${BORDER}`,
         background: CARD,
+        flexShrink: 0,
+        zIndex: 10,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 24 }}>{meta.icon}</span>

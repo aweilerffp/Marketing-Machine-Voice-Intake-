@@ -5,16 +5,23 @@ import { CARD, CARD2, BORDER, TEXT, MUTED, DIM, ACCENT } from '../design-tokens'
 
 export default function TranscriptStream({ transcript, currentSpeaker, isActive }) {
   const bottomRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = containerRef.current;
+    if (!container) return;
+    // Only auto-scroll if user is near the bottom (within 150px)
+    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+    if (isNearBottom) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [transcript]);
 
   // Parse transcript into segments for rendering
   const segments = parseSegments(transcript);
 
   return (
-    <div style={{
+    <div ref={containerRef} style={{
       flex: 1,
       overflowY: 'auto',
       padding: '20px 24px',
