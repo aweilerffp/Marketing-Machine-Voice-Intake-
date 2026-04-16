@@ -1,0 +1,12 @@
+export const ACCENT = "#3B82F6";
+export const GREEN = "#22C55E";
+export const AMBER = "#F59E0B";
+export const RED = "#EF4444";
+export const BG = "#0F172A";
+export const CARD = "#1E293B";
+export const CARD2 = "#293548";
+export const BORDER = "#334155";
+export const TEXT = "#E2E8F0";
+export const MUTED = "#94A3B8";
+export const DIM = "#64748B";
+export const INPUT_BG = "#0F172A";
