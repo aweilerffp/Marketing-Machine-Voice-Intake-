@@ -30,6 +30,7 @@ function ElevenLabsSessionInner() {
   const [activeBubble, setActiveBubble] = useState(null);
   const [error, setError] = useState(null);
   const transcriptSaved = useRef(false);
+  const sessionStarted = useRef(false);
   const lastAgentMessage = useRef('');
   const lastUserMessage = useRef('');
 
@@ -65,6 +66,9 @@ function ElevenLabsSessionInner() {
     },
     onDisconnect: (details) => {
       console.log('ElevenLabs: disconnected', details);
+      if (details && (details.reason || details.code || details.message)) {
+        setError(`disconnect: ${details.reason || details.message || 'code=' + details.code}`);
+      }
       saveTranscriptOnce();
     },
   });
@@ -75,18 +79,24 @@ function ElevenLabsSessionInner() {
   const isComplete = status === 'disconnected' && transcript.length > 0;
   const currentSpeaker = isSpeaking ? 'agent' : 'user';
 
-  // Start session on mount
+  // Start session once on mount
   useEffect(() => {
-    console.log('ElevenLabs useEffect - status:', status, 'agentId:', AGENT_ID);
-    if (AGENT_ID && (status === 'idle' || status === undefined)) {
+    if (sessionStarted.current) return;
+    if (!AGENT_ID) {
+      setError('NEXT_PUBLIC_ELEVENLABS_AGENT_ID is missing');
+      return;
+    }
+    sessionStarted.current = true;
+    console.log('ElevenLabs: calling startSession with agentId', AGENT_ID);
+    (async () => {
       try {
-        startSession({ agentId: AGENT_ID });
+        await startSession({ agentId: AGENT_ID, connectionType: 'websocket' });
       } catch (e) {
         console.error('startSession failed:', e);
-        setError(e.message);
+        setError(e?.message || String(e));
       }
-    }
-  }, []);
+    })();
+  }, [startSession]);
 
   // Nugget detection
   const handleNuggetsFound = useCallback((nuggets) => {
