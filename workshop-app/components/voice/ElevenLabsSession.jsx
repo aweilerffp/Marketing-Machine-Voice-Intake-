@@ -49,20 +49,19 @@ function ElevenLabsSessionInner() {
     onConnect: () => {
       console.log('ElevenLabs: connected');
     },
-    onMessage: (event) => {
-      if (event.type === 'agent_response') {
-        const text = event.agent_response_event?.agent_response;
-        if (text && text !== lastAgentMessage.current) {
-          lastAgentMessage.current = text;
-          setTranscript(prev => prev + '\nQ: ' + text);
+    onMessage: ({ message, role }) => {
+      if (!message) return;
+      if (role === 'agent') {
+        if (message !== lastAgentMessage.current) {
+          lastAgentMessage.current = message;
+          setTranscript(prev => prev + '\nQ: ' + message);
           setCurrentUserUtterance('');
         }
-      } else if (event.type === 'user_transcript') {
-        const text = event.user_transcription_event?.user_transcript;
-        if (text && text !== lastUserMessage.current) {
-          lastUserMessage.current = text;
-          setTranscript(prev => prev + '\nA: ' + text);
-          setCurrentUserUtterance(text);
+      } else if (role === 'user') {
+        if (message !== lastUserMessage.current) {
+          lastUserMessage.current = message;
+          setTranscript(prev => prev + '\nA: ' + message);
+          setCurrentUserUtterance(message);
         }
       }
     },
