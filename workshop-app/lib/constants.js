@@ -16,6 +16,7 @@ export const SECTIONS = {
     icon: '\uD83C\uDFA4',
     deliv: 'Brand Voice Guide',
     stateKey: 'sectionA',
+    subtopics: ['Tone & style', 'Core values', 'Voice characteristics', 'Vocabulary choices', 'Examples & anti-examples'],
   },
   B: {
     key: 'b',
@@ -24,6 +25,7 @@ export const SECTIONS = {
     icon: '\uD83C\uDFAF',
     deliv: 'ICP Profile',
     stateKey: 'sectionB',
+    subtopics: ['Demographics', 'Pains & goals', 'Where they hang out', 'Decision drivers', 'Objections'],
   },
   C: {
     key: 'c',
@@ -32,6 +34,7 @@ export const SECTIONS = {
     icon: '\uD83D\uDCE1',
     deliv: 'Channel Strategy',
     stateKey: 'sectionC',
+    subtopics: ['Primary channels', 'Content cadence', 'Lead magnets', 'CTAs & conversion', 'Budget & resources'],
   },
 };
 
