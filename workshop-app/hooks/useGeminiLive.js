@@ -20,6 +20,8 @@ const DEBUG = process.env.NEXT_PUBLIC_GEMINI_DEBUG === 'true';
 
 const SETUP_TIMEOUT_MS = 10000;
 const DRAIN_CAP_MS = 6000;
+const AUDIO_BUFFER_MAX_CHUNKS = 200; // 100 ms each → 20 s of speech kept across a reconnect
+const USER_END_FINALIZE_MS = 400;    // after ACTIVITY_END, wait briefly for the transcription
 const TIMER_ROLLOVER_GRACE_MS = 45000; // wait up to this long for a natural pause
 const USER_SILENCE_FINALIZE_MS = 1500;
 const LATE_AGENT_FRAGMENT_MS = 1500;
@@ -96,6 +98,10 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
   const lastFinalizedRoleRef = useRef(null);
   const agentFinalizedAtRef = useRef(0);
   const userSilenceTimerRef = useRef(null);
+  const userSpeakingRef = useRef(false);      // from server voiceActivity / speechState
+  const audioBufferRef = useRef([]);          // PCM chunks captured while reconnecting
+  const bufferingRef = useRef(false);
+  const loggedHandleForConnRef = useRef(0);
   const pendingModelTurnRef = useRef(false);
 
   const resumeHandleRef = useRef(null);
@@ -210,7 +216,6 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
 
   function onUserFragment(text) {
     absorbFragment(userBufRef, lastUserFragRef, text);
-    if (mountedRef.current) setIsUserSpeaking(true);
     if (mountedRef.current) setCurrentUserUtterance(normalizeLine(userBufRef.current));
     if (userSilenceTimerRef.current) clearTimeout(userSilenceTimerRef.current);
     userSilenceTimerRef.current = setTimeout(() => {
@@ -242,18 +247,46 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
       const sc = msg.serverContent;
       const scKeys = sc ? Object.keys(sc).filter(k => sc[k] !== undefined && k !== 'modelTurn').join(',') : '';
       const audio = sc?.modelTurn?.parts?.some(p => p.inlineData?.data) ? '+audio' : '';
-      // Skip the very chatty pure-audio / pure-fragment messages in the buffer.
-      if (!(keys.length === 1 && keys[0] === 'serverContent' && (scKeys === '' || scKeys === 'outputTranscription' || scKeys === 'inputTranscription') && !sc?.turnComplete)) {
-        log('msg', keys.join(','), scKeys, audio);
-      }
+      // Skip the very chatty pure-audio / pure-fragment / handle-update messages in the buffer.
+      const chatty =
+        (keys.length === 1 && keys[0] === 'serverContent' && (scKeys === '' || scKeys === 'outputTranscription' || scKeys === 'inputTranscription') && !sc?.turnComplete) ||
+        (keys.length === 1 && keys[0] === 'sessionResumptionUpdate');
+      if (!chatty) log('msg', keys.join(','), scKeys, audio, msg.voiceActivity?.type || '');
     }
 
     if (msg.sessionResumptionUpdate) {
       const u = msg.sessionResumptionUpdate;
       if (u.resumable && u.newHandle) {
         resumeHandleRef.current = u.newHandle;
-        log('resume handle updated');
+        if (loggedHandleForConnRef.current !== conn.id) {
+          loggedHandleForConnRef.current = conn.id;
+          log('resume handle available for connection', conn.id);
+        }
       }
+    }
+
+    // Server-side voice activity: the only reliable "is the founder talking"
+    // signal, since input transcription arrives after the utterance ends.
+    const vaType = msg.voiceActivity?.type;
+    const speechState = msg.serverContent?.speechState;
+    if (vaType === 'ACTIVITY_START' || speechState === 'SPEECH') {
+      if (!userSpeakingRef.current) log('user speech start');
+      userSpeakingRef.current = true;
+      if (mountedRef.current) setIsUserSpeaking(true);
+      if (userSilenceTimerRef.current) {
+        clearTimeout(userSilenceTimerRef.current);
+        userSilenceTimerRef.current = null;
+      }
+    } else if (vaType === 'ACTIVITY_END' || speechState === 'NON_SPEECH') {
+      if (userSpeakingRef.current) log('user speech end');
+      userSpeakingRef.current = false;
+      if (mountedRef.current) setIsUserSpeaking(false);
+      if (userSilenceTimerRef.current) clearTimeout(userSilenceTimerRef.current);
+      userSilenceTimerRef.current = setTimeout(() => {
+        userSilenceTimerRef.current = null;
+        finalizeUser();
+        maybeRunPendingRollover();
+      }, USER_END_FINALIZE_MS);
     }
 
     if (msg.goAway) {
@@ -461,8 +494,35 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     return (
       !pendingModelTurnRef.current &&
       (playbackRef.current?.isEmpty() ?? true) &&
+      !userSpeakingRef.current &&
       !userBufRef.current
     );
+  }
+
+  function lastTranscriptLine() {
+    const t = transcriptRef.current;
+    const idx = t.lastIndexOf('\n');
+    return idx >= 0 ? t.slice(idx + 1) : t;
+  }
+
+  function flushAudioBuffer() {
+    const s = sessionRef.current;
+    const chunks = audioBufferRef.current;
+    audioBufferRef.current = [];
+    bufferingRef.current = false;
+    if (!s || !chunks.length) return 0;
+    let sent = 0;
+    for (const buffer of chunks) {
+      try {
+        s.sendRealtimeInput({ audio: { data: int16ToBase64(buffer), mimeType: 'audio/pcm;rate=16000' } });
+        sent++;
+      } catch (e) {
+        log('buffered audio send failed', e?.message);
+        break;
+      }
+    }
+    log('flushed buffered audio chunks', sent);
+    return sent;
   }
 
   function maybeRunPendingRollover() {
@@ -535,8 +595,12 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     log('reconnect start:', reason);
 
     try {
-      const graph = graphRef.current;
       const playback = playbackRef.current;
+
+      // From here on the mic keeps running; chunks are buffered and replayed
+      // into the new session so nothing the founder says is lost.
+      bufferingRef.current = true;
+      audioBufferRef.current = [];
 
       if (reason === 'unexpected') {
         playback?.flush();
@@ -546,7 +610,6 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
         }
       } else {
         setPhase('draining');
-        graph?.setMuted(true);
         try { sessionRef.current?.sendRealtimeInput({ audioStreamEnd: true }); } catch { /* ignore */ }
         await drainPlayback(DRAIN_CAP_MS);
       }
@@ -556,37 +619,55 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
       checkpointTranscript();
 
       setPhase('reconnecting');
-      graph?.setMuted(true);
       closeCurrentSession();
 
-      let useHandle = !!resumeHandleRef.current && !FORCE_HANDOFF;
+      // Whether the fresh session must speak first: yes if the founder's last
+      // answer never got a reply, or the last question was cut off. If the
+      // last line is a complete question, the founder answers it and the
+      // model simply continues; no resume sentence needed.
+      const last = lastTranscriptLine();
+      const needsNudge = last.startsWith('A:') || /\[interrupted\]\s*$/.test(last) || !last.trim();
+
+      // Tiers: 1) resumption handle  2) fresh session + replayed history
+      //        3) fresh session + Claude handoff brief (if history replay fails)
+      let tier = (!!resumeHandleRef.current && !FORCE_HANDOFF) ? 'handle' : 'seed';
       let connected = false;
       let lastErr = null;
 
       for (let attempt = 0; attempt < MAX_RECONNECT_ATTEMPTS && mountedRef.current && !connected; attempt++) {
         try {
-          if (useHandle) {
+          if (tier === 'handle') {
             log('attempt', attempt + 1, 'resume with handle');
             await connectOnce({ resumeHandle: resumeHandleRef.current });
             connected = true;
+          } else if (tier === 'seed') {
+            log('attempt', attempt + 1, 'fresh session + replayed history');
+            resumeHandleRef.current = null;
+            await connectOnce({ resume: { seeded: true } });
+            const fullTranscript = (priorTranscriptRef.current || '') + transcriptRef.current;
+            const turns = seedHistory(fullTranscript);
+            if (!turns && fullTranscript.trim()) {
+              throw Object.assign(new Error('history replay failed'), { tier: 'seed' });
+            }
+            connected = true;
+            if (needsNudge) sendNudge('[The connection was restored. Continue the interview now from where it left off.]');
           } else {
             setPhase('handoff');
             const seed = await fetchHandoffSeed();
             setPhase('reconnecting');
-            log('attempt', attempt + 1, 'fresh session with', Object.keys(seed)[0]);
+            log('attempt', attempt + 1, 'fresh session + Claude brief', Object.keys(seed)[0]);
             resumeHandleRef.current = null;
             await connectOnce({ resume: seed });
             connected = true;
-            seedHistory((priorTranscriptRef.current || '') + transcriptRef.current);
             sendNudge('[The connection was restored. Continue the interview now, starting with your resume sentence.]');
           }
         } catch (e) {
           lastErr = e;
           console.error('[gemini-live] reconnect attempt failed', e);
+          log('reconnect attempt failed', tier, e?.message);
           closeCurrentSession();
-          if (useHandle) {
-            useHandle = false; // handle rejected or stale → fall back to handoff
-          }
+          // Degrade one tier per failure: handle → seed → brief.
+          tier = tier === 'handle' ? 'seed' : 'brief';
           await sleep(1000 * 2 ** attempt);
         }
       }
@@ -594,6 +675,8 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
       if (!mountedRef.current) return;
 
       if (!connected) {
+        bufferingRef.current = false;
+        audioBufferRef.current = [];
         setPhase('error');
         if (mountedRef.current) {
           setError('Connection lost. Press "End Section" to generate from what we have so far.');
@@ -601,8 +684,8 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
         return;
       }
 
-      graph?.setMuted(false);
       setPhase('live');
+      flushAudioBuffer();
       startSafetyTimer();
       if (mountedRef.current) setRolloverCount(c => c + 1);
       log('reconnect done');
@@ -625,6 +708,12 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     try {
       const graph = await createAudioGraph({
         onChunk: (buffer) => {
+          if (bufferingRef.current) {
+            const buf = audioBufferRef.current;
+            buf.push(buffer);
+            if (buf.length > AUDIO_BUFFER_MAX_CHUNKS) buf.shift();
+            return;
+          }
           const s = sessionRef.current;
           if (!s || graphRef.current?.muted || phaseRef.current !== 'live') return;
           try {

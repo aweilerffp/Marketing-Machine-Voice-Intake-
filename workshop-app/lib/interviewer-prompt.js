@@ -85,6 +85,13 @@ export async function buildSystemInstruction({ section, clientName = '', resume 
       `Your very first message must be exactly: "${FIRST_MESSAGE[section](clientName)}"`,
       'Then continue the interview from the founder\'s answer.',
     );
+  } else if (resume.seeded) {
+    parts.push(
+      '',
+      '## RESUMING AFTER A BRIEF RECONNECT',
+      'The conversation so far is provided to you as history: treat it as your own memory. The founder has already been greeted. Do NOT greet them again, do NOT re-introduce yourself, do NOT apologise for or mention any pause, do NOT ask them to repeat anything, and do NOT repeat questions that were already answered.',
+      'If your last message in the history was a question, simply wait for the founder to answer it, then continue. If the founder speaks, respond to what they say.',
+    );
   } else if (resume.handoff) {
     const h = resume.handoff;
     const coveredNums = (h.covered || []).map(c => (typeof c === 'number' ? c : c?.n)).filter(Number.isFinite);

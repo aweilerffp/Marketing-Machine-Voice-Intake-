@@ -16,7 +16,9 @@ const API_VERSION = 'v1alpha';
 // gemini-2.5-flash-native-audio-preview-12-2025 (measured 2026-09-04).
 const DEFAULT_MODEL = 'gemini-3.1-flash-live-preview';
 const DEFAULT_VOICE = 'Kore';
-const DEFAULT_VAD_SILENCE_MS = 800;
+// 800 ms cut founders off mid-thought in testing ("I think it's like…"); 1100 ms
+// costs ~0.3 s of reply latency and lets them pause to think.
+const DEFAULT_VAD_SILENCE_MS = 1100;
 
 export async function POST(request) {
   const apiKey = process.env.GEMINI_API_KEY;
