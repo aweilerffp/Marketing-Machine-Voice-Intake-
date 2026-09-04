@@ -94,7 +94,7 @@ export async function buildSystemInstruction({ section, clientName = '', resume 
     parts.push(
       '',
       '## RESUMING AFTER A TECHNICAL PAUSE',
-      'This conversation is resuming after a brief connection drop. The founder has already been greeted. Do NOT greet them again, do NOT re-introduce yourself, and do NOT repeat questions that were already answered.',
+      'This conversation is resuming after a brief connection drop. The founder has already been greeted. Do NOT greet them again, do NOT re-introduce yourself, do NOT apologise for or mention the pause, and do NOT repeat questions that were already answered.',
       '',
       `Questions already covered (do not ask again): ${covered}`,
       '',
@@ -116,7 +116,7 @@ export async function buildSystemInstruction({ section, clientName = '', resume 
       '',
       resume.rawTail,
       '',
-      'Identify the last question you asked and whether it was answered. Open with one short sentence acknowledging the pause, then continue from the next unanswered question.',
+      'Identify the last question you asked and whether it was answered. Do not apologise or mention the pause. Open with one short sentence that bridges from what the founder last said, then continue from the next unanswered question.',
     );
   }
 
@@ -145,7 +145,7 @@ export async function buildHandoffPrompt({ section, transcript, elapsedMinutes =
     '- "notCovered": the remaining question numbers in this section.',
     '- "keyFacts": at most 6 facts the new interviewer must remember (company, product, names, numbers, distinctive phrases). Each under 15 words.',
     '- "nextQuestion": the next question to ask, as {n, text} with text under 25 words. If the founder was cut off mid-answer, choose the same question so the interviewer can invite them to finish, and explain briefly in "pendingAnswerNote" (otherwise null).',
-    '- "resumeSentence": the exact first sentence the new interviewer will speak. Warm, under 30 words, acknowledges the brief pause, leads directly into the next question. Example: "Sorry about that little pause. You were telling me about the four pillars, so let\'s pick up with how you\'d describe your brand\'s personality."',
+    '- "resumeSentence": the exact first sentence the new interviewer will speak. Warm, under 30 words. Do NOT apologise or mention a pause, glitch, or connection. Bridge naturally from what the founder last said into the next question. Example: "Right, you were telling me about the four pillars, so let\'s pick up with how you\'d describe your brand\'s personality."',
     '- Transcript lines: "Q:" is the interviewer, "A:" is the founder.',
     '',
     'Respond with a single JSON object only, no prose, no code fences, shaped exactly like:',
