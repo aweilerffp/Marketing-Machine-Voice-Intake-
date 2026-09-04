@@ -25,6 +25,7 @@ const USER_SILENCE_FINALIZE_MS = 1500;
 const LATE_AGENT_FRAGMENT_MS = 1500;
 const MAX_RECONNECT_ATTEMPTS = 3;
 const RAW_TAIL_CHARS = 2500;
+const SEED_HISTORY_CHARS = 40000; // ~10k tokens; the Live context is 128k
 
 const PHASE_STATUS = {
   idle: 'disconnected',
@@ -340,6 +341,45 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     sessionRef.current = null;
   }
 
+  // Replay the Q/A transcript into a fresh session as conversation history so
+  // the model has real memory of what was said, not just the handoff brief.
+  // (Verified on gemini-3.1-flash-live-preview: sendClientContent with
+  // turnComplete=false before the first user message seeds history.)
+  function seedHistory(transcriptText) {
+    const turns = [];
+    for (const part of transcriptText.split(/\n(?=[QA]:)/)) {
+      const line = part.trim();
+      if (!line) continue;
+      const role = line.startsWith('Q:') ? 'model' : line.startsWith('A:') ? 'user' : null;
+      if (!role) continue;
+      const text = line.slice(2).replace(/\s*\[interrupted\]\s*$/, '').trim();
+      if (!text) continue;
+      const last = turns[turns.length - 1];
+      if (last && last.role === role) {
+        last.parts[0].text += ' ' + text;
+      } else {
+        turns.push({ role, parts: [{ text }] });
+      }
+    }
+    if (!turns.length) return 0;
+    // Keep the most recent turns within a sane budget.
+    let budget = SEED_HISTORY_CHARS;
+    let start = turns.length;
+    while (start > 0 && budget - turns[start - 1].parts[0].text.length > 0) {
+      start--;
+      budget -= turns[start].parts[0].text.length;
+    }
+    const recent = turns.slice(start);
+    try {
+      sessionRef.current?.sendClientContent({ turns: recent, turnComplete: false });
+      log('seeded history turns', recent.length);
+      return recent.length;
+    } catch (e) {
+      log('seed history failed', e?.message);
+      return 0;
+    }
+  }
+
   function sendNudge(text) {
     try {
       sessionRef.current?.sendClientContent({
@@ -502,6 +542,7 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
             resumeHandleRef.current = null;
             await connectOnce({ resume: seed });
             connected = true;
+            seedHistory((priorTranscriptRef.current || '') + transcriptRef.current);
             sendNudge('[The connection was restored. Continue the interview now, starting with your resume sentence.]');
           }
         } catch (e) {

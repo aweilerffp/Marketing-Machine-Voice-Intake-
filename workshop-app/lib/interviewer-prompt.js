@@ -99,7 +99,7 @@ export async function buildSystemInstruction({ section, clientName = '', resume 
     parts.push(
       '',
       '## RESUMING AFTER A TECHNICAL PAUSE',
-      'This conversation is resuming after a brief connection drop. The founder has already been greeted. Do NOT greet them again, do NOT re-introduce yourself, do NOT apologise for or mention the pause, and do NOT repeat questions that were already answered.',
+      'This conversation is resuming after a brief connection drop. The earlier conversation is provided to you as history: treat it as your own memory. The founder has already been greeted. Do NOT greet them again, do NOT re-introduce yourself, do NOT apologise for or mention the pause, do NOT ask them to repeat anything they already said, and do NOT repeat questions that were already answered.',
       '',
       `Questions already covered (do not ask again): ${covered}`,
       '',
