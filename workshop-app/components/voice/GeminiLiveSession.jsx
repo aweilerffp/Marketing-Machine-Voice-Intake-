@@ -4,7 +4,8 @@ import { useState, useCallback, useRef } from 'react';
 import { useWorkshopSession } from '../../hooks/useWorkshopSession';
 import { currentSectionFromPhase, SECTIONS } from '../../lib/constants';
 import { useNuggetDetection } from '../../hooks/useNuggetDetection';
-import { useGeminiLive } from '../../hooks/useGeminiLive';
+import { useGeminiLive, getDebugLog } from '../../hooks/useGeminiLive';
+import AnswerSummary from './AnswerSummary';
 import NuggetPanel from './NuggetPanel';
 import NuggetBubble from './NuggetBubble';
 import TopicAgenda from './TopicAgenda';
@@ -14,6 +15,8 @@ import LiveTranscript from './LiveTranscript';
 import { CARD, CARD2, BORDER, MUTED, DIM, AMBER, TEXT } from '../design-tokens';
 
 const ROLLOVER_PHASES = new Set(['draining', 'reconnecting', 'handoff']);
+const SHOW_VERBATIM = process.env.NEXT_PUBLIC_SHOW_VERBATIM === 'true';
+const SHOW_DEBUG_TOOLS = process.env.NEXT_PUBLIC_GEMINI_DEBUG === 'true';
 
 export default function GeminiLiveSession() {
   const { state, dispatch } = useWorkshopSession();
@@ -28,12 +31,44 @@ export default function GeminiLiveSession() {
     dispatch({ type: 'APPEND_TRANSCRIPT', sectionKey: meta.stateKey, chunk });
   }, [dispatch, meta.stateKey]);
 
+  // Bullet summary of the founder's latest answer (replaces verbatim captions).
+  const [summary, setSummary] = useState({ pending: false, bullets: [] });
+  const summarySeq = useRef(0);
+  const onUserAnswer = useCallback(async ({ question, answer }) => {
+    const seq = ++summarySeq.current;
+    setSummary({ pending: true, bullets: [] });
+    try {
+      const res = await fetch('/api/summarize-answer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, answer }),
+      });
+      const data = res.ok ? await res.json() : { bullets: [] };
+      if (seq === summarySeq.current) setSummary({ pending: false, bullets: data.bullets || [] });
+    } catch {
+      if (seq === summarySeq.current) setSummary({ pending: false, bullets: [] });
+    }
+  }, []);
+
+  const [copied, setCopied] = useState(false);
+  async function handleCopyLog() {
+    const text = getDebugLog();
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      window.prompt('Copy the debug log:', text.slice(-4000));
+    }
+  }
+
   const {
     startSession,
     endSession,
     status,
     phase,
     isSpeaking,
+    isUserSpeaking,
     getInputByteFrequencyData,
     getOutputByteFrequencyData,
     transcript,
@@ -44,6 +79,7 @@ export default function GeminiLiveSession() {
     clientName: state.clientName,
     priorTranscript: priorTranscriptRef.current,
     onTranscriptCheckpoint,
+    onUserAnswer,
   });
 
   const isActive = status === 'connected';
@@ -125,6 +161,24 @@ export default function GeminiLiveSession() {
           </div>
         </div>
 
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {SHOW_DEBUG_TOOLS && hasStarted && (
+          <button
+            onClick={handleCopyLog}
+            title="Copy the session debug log to the clipboard"
+            style={{
+              padding: '6px 12px',
+              fontSize: 12,
+              background: 'transparent',
+              color: DIM,
+              border: `1px solid ${BORDER}`,
+              borderRadius: 8,
+              cursor: 'pointer',
+            }}
+          >
+            {copied ? 'Copied ✓' : 'Copy log'}
+          </button>
+        )}
         <button
           onClick={handleEndSection}
           disabled={!hasStarted}
@@ -143,6 +197,7 @@ export default function GeminiLiveSession() {
         >
           {isComplete ? 'Generate Deliverable' : 'End Section'}
         </button>
+        </div>
       </div>
 
       <TopicAgenda activeLetter={sectionLetter} />
@@ -184,11 +239,22 @@ export default function GeminiLiveSession() {
                 isActive={isActive}
                 userColor={meta.color}
               />
-              <LiveTranscript
-                utterance={currentUserUtterance}
-                isSpeaking={isSpeaking}
-                isActive={isActive}
-              />
+              {SHOW_VERBATIM ? (
+                <LiveTranscript
+                  utterance={currentUserUtterance}
+                  isSpeaking={isSpeaking}
+                  isActive={isActive}
+                />
+              ) : (
+                <AnswerSummary
+                  bullets={summary.bullets}
+                  pending={summary.pending}
+                  userSpeaking={isUserSpeaking}
+                  isSpeaking={isSpeaking}
+                  isActive={isActive}
+                  accent={meta.color}
+                />
+              )}
             </>
           )}
         </div>

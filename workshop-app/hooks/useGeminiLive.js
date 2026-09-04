@@ -38,8 +38,22 @@ const PHASE_STATUS = {
   error: 'disconnected',
 };
 
+// Ring buffer of recent events, always on, so a tester can copy it out of the
+// UI without opening devtools. Console output only when DEBUG.
+const LOG_MAX = 600;
+const logBuf = [];
 function log(...args) {
+  const ts = new Date().toISOString().slice(11, 23);
+  const line = args.map(a => (typeof a === 'string' ? a : safeJson(a))).join(' ');
+  logBuf.push(`${ts} ${line}`);
+  if (logBuf.length > LOG_MAX) logBuf.shift();
   if (DEBUG) console.log('[gemini-live]', ...args);
+}
+function safeJson(v) {
+  try { return JSON.stringify(v); } catch { return String(v); }
+}
+export function getDebugLog() {
+  return logBuf.join('\n');
 }
 
 function parseDurationMs(value, fallbackMs) {
@@ -55,9 +69,10 @@ function normalizeLine(text) {
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-export function useGeminiLive({ section, clientName, priorTranscript = '', onTranscriptCheckpoint }) {
+export function useGeminiLive({ section, clientName, priorTranscript = '', onTranscriptCheckpoint, onUserAnswer }) {
   const [phase, setPhaseState] = useState('idle');
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isUserSpeaking, setIsUserSpeaking] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [currentUserUtterance, setCurrentUserUtterance] = useState('');
   const [error, setError] = useState(null);
@@ -93,6 +108,9 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
 
   const onCheckpointRef = useRef(onTranscriptCheckpoint);
   onCheckpointRef.current = onTranscriptCheckpoint;
+  const onUserAnswerRef = useRef(onUserAnswer);
+  onUserAnswerRef.current = onUserAnswer;
+  const lastQuestionRef = useRef('');
   const sectionRef = useRef(section);
   sectionRef.current = section;
   const clientNameRef = useRef(clientName);
@@ -142,7 +160,9 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     lastAgentFragRef.current = '';
     if (normalizeLine(text)) {
       appendLine('agent', text + suffix);
+      lastQuestionRef.current = normalizeLine(text);
       agentFinalizedAtRef.current = Date.now();
+      log('Q:', lastQuestionRef.current.slice(0, 80));
       if (mountedRef.current) setCurrentUserUtterance('');
     }
   }
@@ -155,9 +175,17 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     const text = userBufRef.current;
     userBufRef.current = '';
     lastUserFragRef.current = '';
-    if (normalizeLine(text)) {
+    const answer = normalizeLine(text);
+    if (mountedRef.current) setIsUserSpeaking(false);
+    if (answer) {
       appendLine('user', text);
-      if (mountedRef.current) setCurrentUserUtterance(normalizeLine(text));
+      log('A:', answer.slice(0, 80));
+      if (mountedRef.current) setCurrentUserUtterance(answer);
+      try {
+        onUserAnswerRef.current?.({ question: lastQuestionRef.current, answer });
+      } catch (e) {
+        log('onUserAnswer failed', e?.message);
+      }
     }
   }
 
@@ -182,6 +210,7 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
 
   function onUserFragment(text) {
     absorbFragment(userBufRef, lastUserFragRef, text);
+    if (mountedRef.current) setIsUserSpeaking(true);
     if (mountedRef.current) setCurrentUserUtterance(normalizeLine(userBufRef.current));
     if (userSilenceTimerRef.current) clearTimeout(userSilenceTimerRef.current);
     userSilenceTimerRef.current = setTimeout(() => {
@@ -208,10 +237,15 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
 
   function handleMessage(conn, msg) {
     if (conn !== connRef.current) return; // stale connection
-    if (DEBUG) {
+    {
       const keys = Object.keys(msg).filter(k => msg[k] !== undefined);
       const sc = msg.serverContent;
-      log('msg', keys.join(','), sc ? Object.keys(sc).filter(k => sc[k] !== undefined).join(',') : '');
+      const scKeys = sc ? Object.keys(sc).filter(k => sc[k] !== undefined && k !== 'modelTurn').join(',') : '';
+      const audio = sc?.modelTurn?.parts?.some(p => p.inlineData?.data) ? '+audio' : '';
+      // Skip the very chatty pure-audio / pure-fragment messages in the buffer.
+      if (!(keys.length === 1 && keys[0] === 'serverContent' && (scKeys === '' || scKeys === 'outputTranscription' || scKeys === 'inputTranscription') && !sc?.turnComplete)) {
+        log('msg', keys.join(','), scKeys, audio);
+      }
     }
 
     if (msg.sessionResumptionUpdate) {
@@ -277,6 +311,7 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
 
   function handleError(conn, e) {
     if (conn !== connRef.current) return;
+    log('socket error', e?.message || String(e));
     console.error('[gemini-live] socket error', e);
     // onclose follows and drives the reconnect.
   }
@@ -675,6 +710,7 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     status: PHASE_STATUS[phase] || 'disconnected',
     phase,
     isSpeaking,
+    isUserSpeaking,
     getInputByteFrequencyData,
     getOutputByteFrequencyData,
     transcript,
