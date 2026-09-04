@@ -90,7 +90,12 @@ export async function buildSystemInstruction({ section, clientName = '', resume 
     const coveredNums = (h.covered || []).map(c => (typeof c === 'number' ? c : c?.n)).filter(Number.isFinite);
     const covered = coveredNums.length ? coveredNums.map(n => `Q${n}`).join(', ') : '(none yet)';
     const facts = (h.keyFacts || []).map(f => `- ${f}`).join('\n') || '- (none yet)';
-    const next = h.nextQuestion ? `Q${h.nextQuestion.n}: ${h.nextQuestion.text}` : `Q${meta.first}`;
+    const complete = h.sectionComplete === true || (!h.nextQuestion && coveredNums.length >= meta.last - meta.first + 1);
+    const next = h.nextQuestion
+      ? `Q${h.nextQuestion.n}: ${h.nextQuestion.text}`
+      : complete
+        ? 'None. Every question in this section is covered.'
+        : `Q${meta.first}`;
     parts.push(
       '',
       '## RESUMING AFTER A TECHNICAL PAUSE',
@@ -105,7 +110,9 @@ export async function buildSystemInstruction({ section, clientName = '', resume 
       `Next question to ask: ${next}`,
       '',
       `Your very first sentence must be exactly: "${h.resumeSentence}"`,
-      'Then continue the interview from the next question.',
+      complete
+        ? 'Then ask if there is anything they would like to add, and remind them they can press "End Section" when ready.'
+        : 'Then continue the interview from the next question.',
     );
   } else if (resume.rawTail) {
     parts.push(
@@ -144,12 +151,14 @@ export async function buildHandoffPrompt({ section, transcript, elapsedMinutes =
     '- "covered": question numbers that were meaningfully answered. Numbers only.',
     '- "notCovered": the remaining question numbers in this section.',
     '- "keyFacts": at most 6 facts the new interviewer must remember (company, product, names, numbers, distinctive phrases). Each under 15 words.',
-    '- "nextQuestion": the next question to ask, as {n, text} with text under 25 words. If the founder was cut off mid-answer, choose the same question so the interviewer can invite them to finish, and explain briefly in "pendingAnswerNote" (otherwise null).',
-    '- "resumeSentence": the exact first sentence the new interviewer will speak. Warm, under 30 words. Do NOT apologise or mention a pause, glitch, or connection. Bridge naturally from what the founder last said into the next question. Example: "Right, you were telling me about the four pillars, so let\'s pick up with how you\'d describe your brand\'s personality."',
+    '- "nextQuestion": the next question to ask, as {n, text} with n from THIS section\'s range only and text under 25 words. If the founder was cut off mid-answer, choose the same question so the interviewer can invite them to finish, and explain briefly in "pendingAnswerNote" (otherwise null).',
+    '- "sectionComplete": true only if every question in this section is meaningfully covered. Then set "nextQuestion" to null and "notCovered" to [].',
+    '- "resumeSentence": the exact first sentence the new interviewer will speak. Warm, under 30 words. Do NOT apologise or mention a pause, glitch, or connection. Bridge naturally from what the founder last said into the next question. Example: "Right, you were telling me about the four pillars, so let\'s pick up with how you\'d describe your brand\'s personality." If sectionComplete is true, make it a short wrap-up instead that invites them to add anything they missed or press "End Section".',
     '- Transcript lines: "Q:" is the interviewer, "A:" is the founder.',
     '',
-    'Respond with a single JSON object only, no prose, no code fences, shaped exactly like:',
-    '{"covered":[1,2],"notCovered":[3],"keyFacts":["..."],"nextQuestion":{"n":3,"text":"..."},"resumeSentence":"...","pendingAnswerNote":null}',
+    'Respond with a single JSON object only, no prose, no code fences, shaped exactly like one of:',
+    '{"covered":[1,2],"notCovered":[3],"keyFacts":["..."],"nextQuestion":{"n":3,"text":"..."},"sectionComplete":false,"resumeSentence":"...","pendingAnswerNote":null}',
+    '{"covered":[1,2,3],"notCovered":[],"keyFacts":["..."],"nextQuestion":null,"sectionComplete":true,"resumeSentence":"...","pendingAnswerNote":null}',
   ].join('\n');
 
   const user = [
@@ -170,15 +179,21 @@ export async function buildHandoffPrompt({ section, transcript, elapsedMinutes =
       notCovered: { type: 'array', items: { type: 'integer' } },
       keyFacts: { type: 'array', items: { type: 'string' } },
       nextQuestion: {
-        type: 'object',
-        additionalProperties: false,
-        properties: { n: { type: 'integer' }, text: { type: 'string' } },
-        required: ['n', 'text'],
+        anyOf: [
+          {
+            type: 'object',
+            additionalProperties: false,
+            properties: { n: { type: 'integer' }, text: { type: 'string' } },
+            required: ['n', 'text'],
+          },
+          { type: 'null' },
+        ],
       },
+      sectionComplete: { type: 'boolean' },
       resumeSentence: { type: 'string' },
       pendingAnswerNote: { anyOf: [{ type: 'string' }, { type: 'null' }] },
     },
-    required: ['covered', 'notCovered', 'keyFacts', 'nextQuestion', 'resumeSentence', 'pendingAnswerNote'],
+    required: ['covered', 'notCovered', 'keyFacts', 'nextQuestion', 'sectionComplete', 'resumeSentence', 'pendingAnswerNote'],
   };
 
   return { system, user, schema };

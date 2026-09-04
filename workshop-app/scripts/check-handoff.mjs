@@ -24,14 +24,17 @@ async function run(label, text) {
   }
   const coveredNums = (body.covered || []).map(c => (typeof c === 'number' ? c : c?.n)).filter(Number.isFinite);
   const nextN = body.nextQuestion?.n;
-  const ok =
-    typeof body.resumeSentence === 'string' && body.resumeSentence.length > 0 &&
-    Number.isInteger(nextN) && nextN >= 1 && nextN <= 22 &&
-    // next question must be one not yet covered, unless the founder was cut off mid-answer
-    (!coveredNums.includes(nextN) || !!body.pendingAnswerNote);
+  const hasSentence = typeof body.resumeSentence === 'string' && body.resumeSentence.length > 0;
+  const ok = hasSentence && (
+    body.sectionComplete === true
+      ? body.nextQuestion == null
+      : Number.isInteger(nextN) && nextN >= 1 && nextN <= 22 &&
+        // next question must be one not yet covered, unless the founder was cut off mid-answer
+        (!coveredNums.includes(nextN) || !!body.pendingAnswerNote)
+  );
   console.log(`${ok ? '✓' : '✗'} ${label} (${ms} ms)`);
   console.log('   covered:', (body.covered || []).map(c => (typeof c === 'number' ? c : c?.n)).join(', ') || '(none)');
-  console.log('   next:', body.nextQuestion?.n, '-', body.nextQuestion?.text);
+  console.log('   next:', body.sectionComplete ? '(section complete)' : `${body.nextQuestion?.n} - ${body.nextQuestion?.text}`);
   console.log('   resume:', body.resumeSentence);
   if (body.pendingAnswerNote) console.log('   pending:', body.pendingAnswerNote);
   console.log('   facts:', (body.keyFacts || []).length);

@@ -15,11 +15,10 @@ const MAX_TOKENS = 600;
 const TIMEOUT_MS = 20000;
 
 function isValidBrief(b) {
-  return (
-    b && typeof b === 'object' &&
-    typeof b.resumeSentence === 'string' && b.resumeSentence.trim().length > 0 &&
-    b.nextQuestion && Number.isInteger(b.nextQuestion.n) && typeof b.nextQuestion.text === 'string'
-  );
+  if (!b || typeof b !== 'object') return false;
+  if (typeof b.resumeSentence !== 'string' || !b.resumeSentence.trim()) return false;
+  if (b.nextQuestion == null) return b.sectionComplete === true;
+  return Number.isInteger(b.nextQuestion.n) && typeof b.nextQuestion.text === 'string';
 }
 
 function parseJsonLoose(text) {
