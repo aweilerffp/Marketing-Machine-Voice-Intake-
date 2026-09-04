@@ -12,7 +12,9 @@ export const runtime = 'nodejs';
 
 // Ephemeral tokens are only supported on v1alpha (see @google/genai Tokens.create docs).
 const API_VERSION = 'v1alpha';
-const DEFAULT_MODEL = 'gemini-2.5-flash-native-audio-preview-12-2025';
+// gemini-3.1-flash-live-preview replies ~1.3 s after end of speech vs ~3.5 s for
+// gemini-2.5-flash-native-audio-preview-12-2025 (measured 2026-09-04).
+const DEFAULT_MODEL = 'gemini-3.1-flash-live-preview';
 const DEFAULT_VOICE = 'Kore';
 const DEFAULT_VAD_SILENCE_MS = 800;
 
