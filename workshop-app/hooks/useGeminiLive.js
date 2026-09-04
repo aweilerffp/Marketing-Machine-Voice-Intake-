@@ -128,7 +128,10 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     if (buf && text.length > buf.length && text.startsWith(buf)) {
       bufRef.current = text;
     } else {
-      bufRef.current = buf + text;
+      // Fragments at sentence boundaries arrive without a leading space
+      // ("...do?If you were..."); restore it.
+      const needsSpace = buf && /[.?!,;:]$/.test(buf) && /^[^\s]/.test(text);
+      bufRef.current = buf + (needsSpace ? ' ' : '') + text;
     }
   }
 

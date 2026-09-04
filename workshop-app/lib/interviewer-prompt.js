@@ -12,7 +12,14 @@ const SECTION_META = {
   c: { name: 'Marketing & Channels', range: '34 to 41', first: 34, last: 41, minutes: 10 },
 };
 
-const FALLBACK_PERSONA = `You are a warm, sharp brand strategist running a spoken discovery session with a company founder. Ask one short question at a time, listen closely, ask for concrete examples when answers are thin, and use the founder's own words back to them. Never read a list of questions aloud.`;
+// Exact opening lines per section (Section A is the ElevenLabs first message).
+const FIRST_MESSAGE = {
+  a: (name) => `Hey there${name ? `, ${name}` : ''}! Welcome to your Brand Voice discovery session. I'm excited to dig into what makes your brand tick. So let's start at the top. Tell me, what does your company do? Give me the elevator pitch.`,
+  b: (name) => `Great, that's the brand voice covered. Now let's talk about who ${name || 'you'} actually sells to. If you could clone your best client ten times, what industry are they in?`,
+  c: () => `Last section, and it's a quick one: marketing and channels. Tell me honestly, what marketing are you doing right now?`,
+};
+
+const FALLBACK_PERSONA =`You are a warm, sharp brand strategist running a spoken discovery session with a company founder. Ask one short question at a time, listen closely, ask for concrete examples when answers are thin, and use the founder's own words back to them. Never read a list of questions aloud.`;
 
 export function sectionMeta(section) {
   const meta = SECTION_META[section];
@@ -75,7 +82,8 @@ export async function buildSystemInstruction({ section, clientName = '', resume 
     parts.push(
       '',
       '## Opening',
-      `Begin by greeting the founder warmly in one or two sentences, say you'll be asking about ${meta.name.toLowerCase()} for about ${meta.minutes} minutes, then ask the first question.`,
+      `Your very first message must be exactly: "${FIRST_MESSAGE[section](clientName)}"`,
+      'Then continue the interview from the founder\'s answer.',
     );
   } else if (resume.handoff) {
     const h = resume.handoff;
