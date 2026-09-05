@@ -21,7 +21,7 @@ const DEBUG = process.env.NEXT_PUBLIC_GEMINI_DEBUG === 'true';
 const SETUP_TIMEOUT_MS = 10000;
 const DRAIN_CAP_MS = 6000;
 const AUDIO_BUFFER_MAX_CHUNKS = 200; // 100 ms each → 20 s of speech kept across a reconnect
-const USER_END_FINALIZE_MS = 400;    // after ACTIVITY_END, wait briefly for the transcription
+const USER_END_FINALIZE_MS = 600;    // after ACTIVITY_END, wait briefly for the transcription
 const TIMER_ROLLOVER_GRACE_MS = 45000; // wait up to this long for a natural pause
 const USER_SILENCE_FINALIZE_MS = 1500;
 const LATE_AGENT_FRAGMENT_MS = 1500;
@@ -439,8 +439,13 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     }
     const recent = turns.slice(start);
     try {
-      sessionRef.current?.sendClientContent({ turns: recent, turnComplete: false });
-      log('seeded history turns', recent.length);
+      // If the history ends with the founder's answer, close the turn so the
+      // model responds to it (i.e. asks the NEXT question). If it ends with
+      // the model's own question, leave the turn open so it waits silently.
+      const lastRole = recent[recent.length - 1].role;
+      const turnComplete = lastRole === 'user';
+      sessionRef.current?.sendClientContent({ turns: recent, turnComplete });
+      log('seeded history turns', recent.length, 'lastRole', lastRole, 'turnComplete', turnComplete);
       return recent.length;
     } catch (e) {
       log('seed history failed', e?.message);
@@ -625,8 +630,11 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
       // answer never got a reply, or the last question was cut off. If the
       // last line is a complete question, the founder answers it and the
       // model simply continues; no resume sentence needed.
+      // Only when the last question was cut off does the fresh session need
+      // telling to speak first; every other case is handled by how the
+      // history is seeded (see seedHistory).
       const last = lastTranscriptLine();
-      const needsNudge = last.startsWith('A:') || /\[interrupted\]\s*$/.test(last) || !last.trim();
+      const needsNudge = /\[interrupted\]\s*$/.test(last) || !last.trim();
 
       // Tiers: 1) resumption handle  2) fresh session + replayed history
       //        3) fresh session + Claude handoff brief (if history replay fails)
@@ -650,7 +658,7 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
               throw Object.assign(new Error('history replay failed'), { tier: 'seed' });
             }
             connected = true;
-            if (needsNudge) sendNudge('[The connection was restored. Continue the interview now from where it left off.]');
+            if (needsNudge) sendNudge('[The connection was restored. Your last question was cut off before the founder heard all of it. Ask it again briefly, then wait for their answer.]');
           } else {
             setPhase('handoff');
             const seed = await fetchHandoffSeed();
