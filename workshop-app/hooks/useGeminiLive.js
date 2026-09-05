@@ -27,7 +27,8 @@ const USER_SILENCE_FINALIZE_MS = 1500;
 const LATE_AGENT_FRAGMENT_MS = 1500;
 const MAX_RECONNECT_ATTEMPTS = 3;
 const RAW_TAIL_CHARS = 2500;
-const SEED_HISTORY_CHARS = 40000; // ~10k tokens; the Live context is 128k
+const TRANSCRIPT_CONTEXT_CHARS = 40000; // ~10k tokens carried into a fresh session; context is 128k
+const MAX_SILENT_RECONNECTS = 2;
 
 const PHASE_STATUS = {
   idle: 'disconnected',
@@ -103,6 +104,8 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
   const bufferingRef = useRef(false);
   const loggedHandleForConnRef = useRef(0);
   const pendingModelTurnRef = useRef(false);
+  const turnAudioChunksRef = useRef(0);
+  const silentReconnectsRef = useRef(0);
 
   const resumeHandleRef = useRef(null);
   const safetyTimerRef = useRef(null);
@@ -321,11 +324,31 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
       if (part.inlineData?.data) {
         if (userBufRef.current) finalizeUser();
         pendingModelTurnRef.current = true;
+        turnAudioChunksRef.current++;
+        silentReconnectsRef.current = 0;
         playbackRef.current?.enqueue(part.inlineData.data);
       }
     }
 
     if (sc.turnComplete) {
+      const spokeText = normalizeLine(agentBufRef.current);
+      if (spokeText && turnAudioChunksRef.current === 0 && phaseRef.current === 'live' && !reconnectingRef.current) {
+        // Google returned a transcript with no audio: the founder heard
+        // nothing. Drop the unheard question and reconnect so it is re-asked.
+        log('SILENT TURN (no audio) discarded:', spokeText.slice(0, 80));
+        agentBufRef.current = '';
+        lastAgentFragRef.current = '';
+        pendingModelTurnRef.current = false;
+        turnAudioChunksRef.current = 0;
+        if (silentReconnectsRef.current < MAX_SILENT_RECONNECTS) {
+          silentReconnectsRef.current++;
+          performReconnect('silent');
+        } else {
+          if (mountedRef.current) setError('The interviewer stopped producing audio. Press "End Section" to generate from what we have so far.');
+        }
+        return;
+      }
+      turnAudioChunksRef.current = 0;
       finalizeAgent();
       pendingModelTurnRef.current = false;
       drainCheckRef.current?.();
@@ -409,48 +432,12 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     sessionRef.current = null;
   }
 
-  // Replay the Q/A transcript into a fresh session as conversation history so
-  // the model has real memory of what was said, not just the handoff brief.
-  // (Verified on gemini-3.1-flash-live-preview: sendClientContent with
-  // turnComplete=false before the first user message seeds history.)
-  function seedHistory(transcriptText) {
-    const turns = [];
-    for (const part of transcriptText.split(/\n(?=[QA]:)/)) {
-      const line = part.trim();
-      if (!line) continue;
-      const role = line.startsWith('Q:') ? 'model' : line.startsWith('A:') ? 'user' : null;
-      if (!role) continue;
-      const text = line.slice(2).replace(/\s*\[interrupted\]\s*$/, '').trim();
-      if (!text) continue;
-      const last = turns[turns.length - 1];
-      if (last && last.role === role) {
-        last.parts[0].text += ' ' + text;
-      } else {
-        turns.push({ role, parts: [{ text }] });
-      }
-    }
-    if (!turns.length) return 0;
-    // Keep the most recent turns within a sane budget.
-    let budget = SEED_HISTORY_CHARS;
-    let start = turns.length;
-    while (start > 0 && budget - turns[start - 1].parts[0].text.length > 0) {
-      start--;
-      budget -= turns[start].parts[0].text.length;
-    }
-    const recent = turns.slice(start);
-    try {
-      // If the history ends with the founder's answer, close the turn so the
-      // model responds to it (i.e. asks the NEXT question). If it ends with
-      // the model's own question, leave the turn open so it waits silently.
-      const lastRole = recent[recent.length - 1].role;
-      const turnComplete = lastRole === 'user';
-      sessionRef.current?.sendClientContent({ turns: recent, turnComplete });
-      log('seeded history turns', recent.length, 'lastRole', lastRole, 'turnComplete', turnComplete);
-      return recent.length;
-    } catch (e) {
-      log('seed history failed', e?.message);
-      return 0;
-    }
+  // Memory for a fresh session is carried in the system instruction (the
+  // token route embeds the transcript). Replaying it as client-content turns
+  // made gemini-3.1-flash-live-preview answer in silent text ~30% of the time.
+  function fullTranscript() {
+    const full = (priorTranscriptRef.current || '') + transcriptRef.current;
+    return full.length > TRANSCRIPT_CONTEXT_CHARS ? full.slice(-TRANSCRIPT_CONTEXT_CHARS) : full;
   }
 
   function sendNudge(text) {
@@ -607,7 +594,7 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
       bufferingRef.current = true;
       audioBufferRef.current = [];
 
-      if (reason === 'unexpected') {
+      if (reason === 'unexpected' || reason === 'silent') {
         playback?.flush();
         if (pendingModelTurnRef.current) {
           finalizeAgent(' [interrupted]');
@@ -626,19 +613,16 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
       setPhase('reconnecting');
       closeCurrentSession();
 
-      // Whether the fresh session must speak first: yes if the founder's last
-      // answer never got a reply, or the last question was cut off. If the
-      // last line is a complete question, the founder answers it and the
-      // model simply continues; no resume sentence needed.
-      // Only when the last question was cut off does the fresh session need
-      // telling to speak first; every other case is handled by how the
-      // history is seeded (see seedHistory).
+      // A fresh session must speak first when the founder's last answer has
+      // had no reply (last line is A:) or the last question was cut off.
+      // If the last line is a complete question, it waits for the answer.
       const last = lastTranscriptLine();
-      const needsNudge = /\[interrupted\]\s*$/.test(last) || !last.trim();
+      const needsNudge = last.startsWith('A:') || /\[interrupted\]\s*$/.test(last) || !last.trim();
 
-      // Tiers: 1) resumption handle  2) fresh session + replayed history
-      //        3) fresh session + Claude handoff brief (if history replay fails)
-      let tier = (!!resumeHandleRef.current && !FORCE_HANDOFF) ? 'handle' : 'seed';
+      // Tiers: 1) resumption handle  2) fresh session + transcript in the
+      // system instruction  3) fresh session + Claude handoff brief
+      const canResume = !!resumeHandleRef.current && !FORCE_HANDOFF && reason !== 'silent';
+      let tier = canResume ? 'handle' : 'transcript';
       let connected = false;
       let lastErr = null;
 
@@ -648,17 +632,12 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
             log('attempt', attempt + 1, 'resume with handle');
             await connectOnce({ resumeHandle: resumeHandleRef.current });
             connected = true;
-          } else if (tier === 'seed') {
-            log('attempt', attempt + 1, 'fresh session + replayed history');
+          } else if (tier === 'transcript') {
+            log('attempt', attempt + 1, 'fresh session + transcript context', needsNudge ? '(will nudge)' : '(waits for answer)');
             resumeHandleRef.current = null;
-            await connectOnce({ resume: { seeded: true } });
-            const fullTranscript = (priorTranscriptRef.current || '') + transcriptRef.current;
-            const turns = seedHistory(fullTranscript);
-            if (!turns && fullTranscript.trim()) {
-              throw Object.assign(new Error('history replay failed'), { tier: 'seed' });
-            }
+            await connectOnce({ resume: { transcript: fullTranscript() } });
             connected = true;
-            if (needsNudge) sendNudge('[The connection was restored. Your last question was cut off before the founder heard all of it. Ask it again briefly, then wait for their answer.]');
+            if (needsNudge) sendNudge('[The connection was restored. Continue the interview now.]');
           } else {
             setPhase('handoff');
             const seed = await fetchHandoffSeed();
@@ -674,8 +653,8 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
           console.error('[gemini-live] reconnect attempt failed', e);
           log('reconnect attempt failed', tier, e?.message);
           closeCurrentSession();
-          // Degrade one tier per failure: handle → seed → brief.
-          tier = tier === 'handle' ? 'seed' : 'brief';
+          // Degrade one tier per failure: handle → transcript → brief.
+          tier = tier === 'handle' ? 'transcript' : 'brief';
           await sleep(1000 * 2 ** attempt);
         }
       }

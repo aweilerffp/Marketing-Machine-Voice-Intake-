@@ -85,12 +85,20 @@ export async function buildSystemInstruction({ section, clientName = '', resume 
       `Your very first message must be exactly: "${FIRST_MESSAGE[section](clientName)}"`,
       'Then continue the interview from the founder\'s answer.',
     );
-  } else if (resume.seeded) {
+  } else if (resume.transcript) {
+    const lastIsQuestion = /\nQ:[^\n]*$/.test('\n' + resume.transcript.trim());
     parts.push(
       '',
       '## RESUMING AFTER A BRIEF RECONNECT',
-      'The conversation so far is provided to you as history: treat it as your own memory. The founder has already been greeted. Do NOT greet them again, do NOT re-introduce yourself, do NOT apologise for or mention any pause, do NOT ask them to repeat anything, and do NOT repeat questions that were already answered.',
-      'If your last message in the history was a question, simply wait for the founder to answer it, then continue. If the founder speaks, respond to what they say.',
+      'The conversation so far is below. Treat it as your own memory: you said every Q line aloud already, and the founder said every A line. The founder has already been greeted. Do NOT greet them again, do NOT re-introduce yourself, do NOT apologise for or mention any pause, do NOT ask them to repeat anything, and do NOT repeat questions that were already answered.',
+      '',
+      '<conversation_so_far>',
+      resume.transcript.trim(),
+      '</conversation_so_far>',
+      '',
+      lastIsQuestion
+        ? 'Your last question above has NOT been answered yet. Wait silently for the founder to answer it, then continue.'
+        : "The founder's last answer above has not had a reply yet. React briefly to it and ask the next question.",
     );
   } else if (resume.handoff) {
     const h = resume.handoff;
