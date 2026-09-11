@@ -95,7 +95,7 @@ function extractAgentQuestions(transcript) {
   for (const part of parts) {
     const trimmed = part.trim();
     if (trimmed.startsWith('Q:')) {
-      result.push(trimmed.slice(2).trim());
+      result.push(trimmed.slice(2).replace(/\s*\[interrupted\]\s*$/, '').trim());
     }
   }
   return result;

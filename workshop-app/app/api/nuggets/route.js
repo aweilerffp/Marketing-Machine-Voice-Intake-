@@ -36,6 +36,10 @@ export async function POST(request) {
     if (raw.startsWith('```')) {
       raw = raw.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '');
     }
+    // Haiku occasionally appends prose after the object; keep only the first {...}.
+    const start = raw.indexOf('{');
+    const end = raw.lastIndexOf('}');
+    if (start >= 0 && end > start) raw = raw.slice(start, end + 1);
     const parsed = JSON.parse(raw);
     return Response.json({ nuggets: parsed.nuggets || [] });
   } catch (err) {

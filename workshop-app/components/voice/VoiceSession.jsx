@@ -11,15 +11,22 @@ import NuggetPanel from './NuggetPanel';
 import NuggetBubble from './NuggetBubble';
 import { CARD, CARD2, BORDER, MUTED, DIM, RED, TEXT } from '../design-tokens';
 
-const USE_ELEVENLABS = process.env.NEXT_PUBLIC_USE_ELEVENLABS === 'true';
+// Voice provider: 'gemini' | 'elevenlabs' | 'mock'.
+// NEXT_PUBLIC_USE_ELEVENLABS=true is honoured as a legacy alias for 'elevenlabs'.
+const PROVIDER =
+  process.env.NEXT_PUBLIC_VOICE_PROVIDER ||
+  (process.env.NEXT_PUBLIC_USE_ELEVENLABS === 'true' ? 'elevenlabs' : 'mock');
 
-const ElevenLabsSession = USE_ELEVENLABS
-  ? dynamic(() => import('./ElevenLabsSession'), { ssr: false })
-  : null;
+const PROVIDERS = {
+  gemini: dynamic(() => import('./GeminiLiveSession'), { ssr: false }),
+  elevenlabs: dynamic(() => import('./ElevenLabsSession'), { ssr: false }),
+};
+
+const ProviderSession = PROVIDERS[PROVIDER] || null;
 
 export default function VoiceSession() {
-  if (ElevenLabsSession) {
-    return <ElevenLabsSession />;
+  if (ProviderSession) {
+    return <ProviderSession />;
   }
   const { state, dispatch } = useWorkshopSession();
   const sectionLetter = currentSectionFromPhase(state.currentPhase);

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 const MODEL = 'claude-sonnet-4-6';
 const MAX_TOKENS = 16000;
 
-const SECTION_CONFIG = {
+export const SECTION_CONFIG = {
   a: {
     name: 'Brand Voice',
     prompt: 'prompts/brand-voice-generation.md',
@@ -32,7 +32,7 @@ const SECTION_CONFIG = {
 // The prompts/schemas live in the parent directory (repo root)
 const PROJECT_ROOT = join(process.cwd(), '..');
 
-async function readProjectFile(relativePath) {
+export async function readProjectFile(relativePath) {
   return readFile(join(PROJECT_ROOT, relativePath), 'utf-8');
 }
 
