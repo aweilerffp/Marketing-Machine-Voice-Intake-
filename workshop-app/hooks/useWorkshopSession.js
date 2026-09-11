@@ -2,16 +2,32 @@
 
 import { createContext, useContext, useReducer, useEffect, useRef, useCallback } from 'react';
 import { defaultSession, saveSession, loadSession } from '../lib/session';
+import { newSessionId } from '../lib/slug';
 
 const WorkshopContext = createContext(null);
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'INIT':
-      return { ...action.session };
+    case 'INIT': {
+      // Merge over defaults so sessions persisted before new keys existed still work.
+      const merged = { ...defaultSession(), ...action.session };
+      if (!merged.sessionId && merged.clientName) merged.sessionId = newSessionId();
+      return merged;
+    }
 
     case 'SET_CLIENT_NAME':
-      return { ...state, clientName: action.name, startedAt: state.startedAt || new Date().toISOString() };
+      return {
+        ...state,
+        clientName: action.name,
+        startedAt: state.startedAt || new Date().toISOString(),
+        sessionId: state.sessionId || newSessionId(),
+      };
+
+    case 'SET_SAVE_STATUS':
+      return { ...state, saveStatus: { ...state.saveStatus, [action.sectionKey]: action.status } };
+
+    case 'SET_COMPLETION_SAVED':
+      return { ...state, completionSavedAt: new Date().toISOString() };
 
     case 'SET_PHASE':
       return { ...state, currentPhase: action.phase };
