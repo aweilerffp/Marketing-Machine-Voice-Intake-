@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useWorkshopSession } from '../../hooks/useWorkshopSession';
 import { currentSectionFromPhase, SECTIONS } from '../../lib/constants';
 import StageProgress from './StageProgress';
+import { saveToServer } from '../../lib/save-client';
 import { CARD, BORDER, MUTED, DIM, TEXT, RED } from '../design-tokens';
 
 const STAGE_SEQUENCE = ['analyzing', 'extracting', 'validating', 'complete'];
@@ -25,6 +26,21 @@ export default function GeneratingScreen() {
     extractionStarted.current = true;
 
     async function runExtraction() {
+      const saveCtx = {
+        sessionId: state.sessionId,
+        clientName: state.clientName,
+        startedAt: state.startedAt,
+      };
+
+      // Checkpoint the raw transcript on the server right away so it survives
+      // an extraction failure. Fire-and-forget; the UI never waits on it.
+      saveToServer({
+        ...saveCtx,
+        event: 'transcript',
+        section: meta.key,
+        transcript: sectionData.transcript,
+      });
+
       // Stage 1: Analyzing (visual delay)
       setStage('analyzing');
       await delay(STAGE_DELAYS[0]);
@@ -60,6 +76,19 @@ export default function GeneratingScreen() {
           type: 'SET_EXTRACTED_DATA',
           sectionKey: meta.stateKey,
           data: result,
+        });
+
+        // Persist transcript + JSON + Markdown on the server (and notify Slack).
+        saveToServer({
+          ...saveCtx,
+          event: 'section',
+          section: meta.key,
+          transcript: sectionData.transcript,
+          extractedData: result,
+          nuggets: sectionData.nuggets,
+          completedAt: new Date().toISOString(),
+        }).then(r => {
+          dispatch({ type: 'SET_SAVE_STATUS', sectionKey: meta.stateKey, status: r.ok ? 'saved' : 'failed' });
         });
 
         // Brief pause to show completion

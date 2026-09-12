@@ -5,7 +5,10 @@ import { useWorkshopSession } from '../../hooks/useWorkshopSession';
 import { currentSectionFromPhase, SECTIONS } from '../../lib/constants';
 import ThemeCard from './ThemeCard';
 import CoverageBar from './CoverageBar';
-import { CARD, CARD2, BORDER, MUTED, DIM, TEXT, ACCENT } from '../design-tokens';
+import { CARD, CARD2, BORDER, MUTED, DIM, TEXT, ACCENT, GREEN, AMBER } from '../design-tokens';
+import DownloadMarkdownButton from '../DownloadMarkdownButton';
+import { renderSectionMarkdown } from '../../lib/render-markdown';
+import { sectionDownloadName } from '../../lib/slug';
 
 const NEXT_PHASE = { A: 'SB_INT', B: 'SC_INT', C: 'COMPLETE' };
 
@@ -49,6 +52,7 @@ export default function DeliverableView() {
 
   const themes = data.themes ? Object.entries(data.themes) : [];
   const nuggets = sectionData.nuggets || [];
+  const saveStatus = state.saveStatus?.[meta.stateKey];
 
   return (
     <div style={{
@@ -70,6 +74,32 @@ export default function DeliverableView() {
           <p style={{ color: MUTED, fontSize: 15 }}>
             Extracted from your {meta.label} discovery session
           </p>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 14,
+            marginTop: 16,
+            flexWrap: 'wrap',
+          }}>
+            <DownloadMarkdownButton
+              label={`Download ${meta.deliv} (.md)`}
+              color={meta.color}
+              filename={sectionDownloadName(state.clientName, sectionLetter, meta.deliv)}
+              getMarkdown={() => renderSectionMarkdown({
+                clientName: state.clientName,
+                sessionId: state.sessionId,
+                letter: sectionLetter,
+                sectionData,
+              })}
+            />
+            {saveStatus === 'saved' && (
+              <span style={{ fontSize: 12, color: GREEN }}>{'\u2713'} Saved to server</span>
+            )}
+            {saveStatus === 'failed' && (
+              <span style={{ fontSize: 12, color: AMBER }}>Server save failed — download a copy</span>
+            )}
+          </div>
         </motion.div>
 
         {/* Theme cards */}
