@@ -65,6 +65,8 @@ export default function GeminiLiveSession() {
   const {
     startSession,
     endSession,
+    pauseSession,
+    resumeSession,
     status,
     phase,
     isSpeaking,
@@ -83,6 +85,7 @@ export default function GeminiLiveSession() {
   });
 
   const isActive = status === 'connected';
+  const isPaused = phase === 'paused';
   const isRollingOver = ROLLOVER_PHASES.has(phase);
   const hasStarted = phase !== 'idle';
   const isComplete = (phase === 'ended' || phase === 'error') && transcript.length > 0;
@@ -105,6 +108,7 @@ export default function GeminiLiveSession() {
     phase === 'connecting' ? 'Connecting…' :
     phase === 'handoff' ? 'Saving progress…' :
     isRollingOver ? 'One moment…' :
+    isPaused ? 'Paused — the interviewer cannot hear you' :
     isActive ? (isSpeaking ? 'Agent speaking' : 'Listening') :
     phase === 'ended' ? 'Session complete' :
     phase === 'error' ? 'Connection lost' :
@@ -126,6 +130,18 @@ export default function GeminiLiveSession() {
           borderBottom: `1px solid ${BORDER}`,
         }}>
           {error}
+        </div>
+      )}
+
+      {isPaused && (
+        <div style={{
+          padding: '6px 24px',
+          fontSize: 12,
+          background: 'rgba(148,163,184,0.12)',
+          color: MUTED,
+          borderBottom: `1px solid ${BORDER}`,
+        }}>
+          Interview paused. Talk freely — nothing is being sent to the interviewer. Press Resume when you are ready.
         </div>
       )}
 
@@ -177,6 +193,25 @@ export default function GeminiLiveSession() {
             }}
           >
             {copied ? 'Copied ✓' : 'Copy log'}
+          </button>
+        )}
+        {(isActive || isPaused) && (
+          <button
+            onClick={isPaused ? resumeSession : pauseSession}
+            title={isPaused ? 'Reconnect the interviewer and continue' : 'Mute the mic and stop the interviewer so you can talk in the room'}
+            style={{
+              padding: '8px 16px',
+              fontSize: 13,
+              fontWeight: 600,
+              background: isPaused ? meta.color : 'transparent',
+              color: isPaused ? '#fff' : MUTED,
+              border: `1px solid ${isPaused ? meta.color : BORDER}`,
+              borderRadius: 8,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+          >
+            {isPaused ? '\u25B6 Resume' : '\u23F8 Pause'}
           </button>
         )}
         <button
