@@ -14,7 +14,8 @@ export const runtime = 'nodejs';
 const API_VERSION = 'v1alpha';
 // gemini-3.1-flash-live-preview replies ~1.3 s after end of speech vs ~3.5 s for
 // gemini-2.5-flash-native-audio-preview-12-2025 (measured 2026-09-04).
-const DEFAULT_MODEL = 'gemini-3.1-flash-live-preview';
+// Trying gemini-3.8-live (released 2026-09-15, same price as 3.1 Flash Live).
+const DEFAULT_MODEL = 'gemini-3.8-live';
 const DEFAULT_VOICE = 'Kore';
 // 800 ms cut founders off mid-thought in testing ("I think it's like…"); 1100 ms
 // costs ~0.3 s of reply latency and lets them pause to think.
