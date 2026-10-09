@@ -29,6 +29,10 @@ const MAX_RECONNECT_ATTEMPTS = 3;
 const RAW_TAIL_CHARS = 2500;
 const TRANSCRIPT_CONTEXT_CHARS = 40000; // ~10k tokens carried into a fresh session; context is 128k
 const MAX_SILENT_RECONNECTS = 2;
+const RESUME_NUDGE =
+  '[The founder paused the interview for a short break and has just come back. ' +
+  'Welcome them back in one short sentence, then continue. If your last question ' +
+  'was not answered, ask it again briefly.]';
 
 const PHASE_STATUS = {
   idle: 'disconnected',
@@ -37,6 +41,7 @@ const PHASE_STATUS = {
   draining: 'connecting',
   reconnecting: 'connecting',
   handoff: 'connecting',
+  paused: 'paused',
   ended: 'disconnected',
   error: 'disconnected',
 };
@@ -577,7 +582,8 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
 
   async function performReconnect(reason) {
     if (reconnectingRef.current) return;
-    if (phaseRef.current !== 'live') return;
+    const resuming = reason === 'resume';
+    if (resuming ? phaseRef.current !== 'paused' : phaseRef.current !== 'live') return;
     reconnectingRef.current = true;
     clearSafetyTimer();
     if (pendingRolloverRef.current) {
@@ -590,11 +596,12 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
       const playback = playbackRef.current;
 
       // From here on the mic keeps running; chunks are buffered and replayed
-      // into the new session so nothing the founder says is lost.
-      bufferingRef.current = true;
+      // into the new session so nothing the founder says is lost. Not after a
+      // pause: the mic is muted and room chatter must never reach the model.
+      bufferingRef.current = !resuming;
       audioBufferRef.current = [];
 
-      if (reason === 'unexpected' || reason === 'silent') {
+      if (reason === 'unexpected' || reason === 'silent' || resuming) {
         playback?.flush();
         if (pendingModelTurnRef.current) {
           finalizeAgent(' [interrupted]');
@@ -632,12 +639,14 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
             log('attempt', attempt + 1, 'resume with handle');
             await connectOnce({ resumeHandle: resumeHandleRef.current });
             connected = true;
+            if (resuming) sendNudge(RESUME_NUDGE);
           } else if (tier === 'transcript') {
             log('attempt', attempt + 1, 'fresh session + transcript context', needsNudge ? '(will nudge)' : '(waits for answer)');
             resumeHandleRef.current = null;
             await connectOnce({ resume: { transcript: fullTranscript() } });
             connected = true;
-            if (needsNudge) sendNudge('[The connection was restored. Continue the interview now.]');
+            if (resuming) sendNudge(RESUME_NUDGE);
+            else if (needsNudge) sendNudge('[The connection was restored. Continue the interview now.]');
           } else {
             setPhase('handoff');
             const seed = await fetchHandoffSeed();
@@ -666,11 +675,14 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
         audioBufferRef.current = [];
         setPhase('error');
         if (mountedRef.current) {
-          setError('Connection lost. Press "End Section" to generate from what we have so far.');
+          setError(resuming
+            ? 'Could not reconnect the interviewer. Press "End Section" to generate from what we have so far.'
+            : 'Connection lost. Press "End Section" to generate from what we have so far.');
         }
         return;
       }
 
+      if (resuming) graphRef.current?.setMuted(false);
       setPhase('live');
       flushAudioBuffer();
       startSafetyTimer();
@@ -735,6 +747,44 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Pause: close the Gemini session and mute the mic so people in the room
+  // can talk freely. Resume reconnects through the normal rollover tiers
+  // (resumption handle → transcript context → Claude brief).
+  const pauseSession = useCallback(() => {
+    if (phaseRef.current !== 'live' || reconnectingRef.current) return;
+    log('pause');
+    clearSafetyTimer();
+    if (pendingRolloverRef.current) {
+      clearTimeout(pendingRolloverRef.current.deadlineTimer);
+      pendingRolloverRef.current = null;
+    }
+    graphRef.current?.setMuted(true);
+    bufferingRef.current = false;
+    audioBufferRef.current = [];
+    playbackRef.current?.flush();
+    if (pendingModelTurnRef.current) {
+      finalizeAgent(' [interrupted]');
+      pendingModelTurnRef.current = false;
+    }
+    turnAudioChunksRef.current = 0;
+    userSpeakingRef.current = false;
+    finalizeUser();
+    finalizeAgent();
+    checkpointTranscript();
+    closeCurrentSession();
+    if (mountedRef.current) {
+      setIsSpeaking(false);
+      setIsUserSpeaking(false);
+    }
+    setPhase('paused');
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const resumeSession = useCallback(async () => {
+    if (phaseRef.current !== 'paused') return;
+    log('resume');
+    await performReconnect('resume');
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const teardown = useCallback(async () => {
     clearSafetyTimer();
     if (pendingRolloverRef.current) {
@@ -783,6 +833,8 @@ export function useGeminiLive({ section, clientName, priorTranscript = '', onTra
   return {
     startSession,
     endSession,
+    pauseSession,
+    resumeSession,
     status: PHASE_STATUS[phase] || 'disconnected',
     phase,
     isSpeaking,
